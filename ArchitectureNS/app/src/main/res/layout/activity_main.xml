@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/image1"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    app:srcCompat="@drawable/image1"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:padding="3dp"/>
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="230dp"
+                    android:alpha="0.8"
+                    android:background="@android:color/white"
+                    android:padding="2dp"
+                    android:text="Centar"
+                    android:textColor="@android:color/black"
+                    android:textSize="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/human_walking"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="260dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/white"
+                    android:alpha="0.8"
+                    android:padding="3dp"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/human_walking" />
+
+                <TextView
+                    android:id="@+id/textViewKm1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="260dp"
+                    android:layout_marginLeft="30dp"
+                    android:alpha="0.8"
+                    android:background="@android:color/white"
+                    android:padding="2dp"
+                    android:text="8 km"
+                    android:textColor="@android:color/black"
+                    android:textSize="19dp" />
+
+                <ImageView
+                    android:id="@+id/clock"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="260dp"
+                    android:layout_toRightOf="@id/textViewKm1"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/white"
+                    android:alpha="0.8"
+                    android:padding="3dp"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/clock" />
+
+                <TextView
+                    android:id="@+id/textViewH2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="260dp"
+                    android:layout_toRightOf="@id/clock"
+                    android:alpha="0.8"
+                    android:background="@android:color/white"
+                    android:padding="2dp"
+                    android:text="2:20h"
+                    android:textColor="@android:color/black"
+                    android:textSize="19dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/image2"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/image2"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:padding="3dp"/>
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="230dp"
+                    android:alpha="0.8"
+                    android:background="@android:color/white"
+                    android:padding="2dp"
+                    android:text="Petrovaradin"
+                    android:textColor="@android:color/black"
+                    android:textSize="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/human_walking2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="260dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/white"
+                    android:alpha="0.8"
+                    android:padding="3dp"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/human_walking" />
+
+                <TextView
+                    android:id="@+id/textViewKm2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="260dp"
+                    android:layout_marginLeft="30dp"
+                    android:alpha="0.8"
+                    android:background="@android:color/white"
+                    android:padding="2dp"
+                    android:text="8 km"
+                    android:textColor="@android:color/black"
+                    android:textSize="19dp" />
+
+                <ImageView
+                    android:id="@+id/clock2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="260dp"
+                    android:layout_toRightOf="@id/textViewKm2"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/white"
+                    android:alpha="0.8"
+                    android:padding="3dp"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/clock" />
+
+                <TextView
+                    android:id="@+id/textViewH3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="260dp"
+                    android:layout_toRightOf="@id/clock2"
+                    android:alpha="0.8"
+                    android:background="@android:color/white"
+                    android:padding="2dp"
+                    android:text="2:20h"
+                    android:textColor="@android:color/black"
+                    android:textSize="19dp" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/image3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="300dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/image3"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:padding="3dp"/>
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="230dp"
+                    android:alpha="0.8"
+                    android:background="@android:color/white"
+                    android:padding="2dp"
+                    android:text="Strand"
+                    android:textColor="@android:color/black"
+                    android:textSize="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/human_walking3"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="260dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/white"
+                    android:alpha="0.8"
+                    android:padding="3dp"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/human_walking" />
+
+                <TextView
+                    android:id="@+id/textViewKm3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="260dp"
+                    android:layout_marginLeft="30dp"
+                    android:alpha="0.8"
+                    android:background="@android:color/white"
+                    android:padding="2dp"
+                    android:text="8 km"
+                    android:textColor="@android:color/black"
+                    android:textSize="19dp" />
+
+                <ImageView
+                    android:id="@+id/clock3"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="260dp"
+                    android:layout_toRightOf="@id/textViewKm3"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/white"
+                    android:alpha="0.8"
+                    android:padding="3dp"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/clock" />
+
+                <TextView
+                    android:id="@+id/textViewH4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="260dp"
+                    android:layout_toRightOf="@id/clock3"
+                    android:alpha="0.8"
+                    android:background="@android:color/white"
+                    android:padding="2dp"
+                    android:text="2:20h"
+                    android:textColor="@android:color/black"
+                    android:textSize="19dp" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>
