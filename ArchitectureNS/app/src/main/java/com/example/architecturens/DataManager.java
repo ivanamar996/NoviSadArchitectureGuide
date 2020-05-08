@@ -63,7 +63,7 @@ public class DataManager {
         places.add(new PlaceInfo("place1","Tvrdjava","Katedrala je jedna od najbitnijih znamenitosti centra,kao i samog Novog Sada."));
         places.add(new PlaceInfo("place2", "Sat", "Porta se nalazi iza katedrale i sadrzi veci broj ugostiteljskih objekata."));
         places.add(new PlaceInfo("place3", "Kafici", "Navedena ulica predstavlja setaliste i nema saobrcaja u njoj. Ljudi rado setaju tom ulicom."));
-        return new RouteInfo("route2", "Petrovaradin", places, 1, "Petrovaradin grada je jako lijep i prepun raskosnih gradjevina iz doba austrougarske.", 10,"drawable/image1.jpg" );
+        return new RouteInfo("route2", "Petrovaradin", places, 1, "Petrovaradin grada je jako lijep i prepun raskosnih gradjevina iz doba austrougarske.", 10,"drawable/image2.jpg" );
     }
 
     private RouteInfo initRoute3() {
@@ -71,7 +71,7 @@ public class DataManager {
         places.add(new PlaceInfo("place1","Kej","Katedrala je jedna od najbitnijih znamenitosti centra,kao i samog Novog Sada."));
         places.add(new PlaceInfo("place2", "Kafici", "Porta se nalazi iza katedrale i sadrzi veci broj ugostiteljskih objekata."));
         places.add(new PlaceInfo("place3", "Plaza", "Navedena ulica predstavlja setaliste i nema saobrcaja u njoj. Ljudi rado setaju tom ulicom."));
-        return new RouteInfo("route3", "Strand", places, 3, "Strand grada je jako lijep i prepun raskosnih gradjevina iz doba austrougarske.", 10,"drawable/image1.jpg" );
+        return new RouteInfo("route3", "Strand", places, 3, "Strand grada je jako lijep i prepun raskosnih gradjevina iz doba austrougarske.", 10,"drawable/image3.jpg" );
     }
 }
 
