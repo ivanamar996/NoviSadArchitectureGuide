@@ -2,6 +2,7 @@ package com.example.architecturens;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -25,20 +27,10 @@ public class MainActivity extends AppCompatActivity {
         initializeDisplayContent();
     }
 
-    private  void initializeDisplayContent(){
-        initializeImages();
-        initializeDuration();
-
-    }
-
-    private void initializeDuration() {
-
-    }
-
-    private void initializeImages() {
+    private void initializeDisplayContent() {
         ImageView imageView=findViewById(R.id.image1);
         DataManager dm= DataManager.getInstance();
-        RouteInfo ri=dm.getRoute("route1");
+        final RouteInfo ri=dm.getRoute("route1");
         String imgName= ri.getPictureFileName();
         Resources res = getResources();
         String[] parts = imgName.split("/");
@@ -49,12 +41,23 @@ public class MainActivity extends AppCompatActivity {
         int resID = res.getIdentifier(mDrawableName , "drawable", getPackageName());
         Drawable drawable = res.getDrawable(resID );
         imageView.setImageDrawable(drawable);
+        TextView title= findViewById(R.id.textView1);
+        title.setText(ri.getTitle());
+        TextView kilometres= findViewById(R.id.textViewKm1);
+        kilometres.setText((int) ri.getKilometres() + "km");
+        TextView duration = findViewById(R.id.textViewH2);
+        duration.setText((double)ri.getDuration() + "h");
+
         imageView.setOnClickListener(new View.OnClickListener() {
 
             @Override
                 public void onClick(View view){
-                    //ovjde ide intent
-                }
+                Intent intent = new Intent(MainActivity.this,PlaceActivity.class);
+                intent.putExtra(PlaceActivity.PLACE_INFO, ri);
+                startActivity(intent);
+            }
+
+
             });
 
         }

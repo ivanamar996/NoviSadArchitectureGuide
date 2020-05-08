@@ -12,11 +12,13 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <RelativeLayout
+                android:id="@+id/rel1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
@@ -36,7 +38,6 @@
                     android:alpha="0.8"
                     android:background="@android:color/white"
                     android:padding="2dp"
-                    android:text="Centar"
                     android:textColor="@android:color/black"
                     android:textSize="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -66,7 +67,6 @@
                     android:alpha="0.8"
                     android:background="@android:color/white"
                     android:padding="2dp"
-                    android:text="8 km"
                     android:textColor="@android:color/black"
                     android:textSize="19dp" />
 
@@ -92,13 +92,13 @@
                     android:alpha="0.8"
                     android:background="@android:color/white"
                     android:padding="2dp"
-                    android:text="2:20h"
                     android:textColor="@android:color/black"
                     android:textSize="19dp" />
 
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/rel2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
@@ -186,6 +186,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/rel3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 

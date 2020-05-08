@@ -93,7 +93,10 @@ public final class RouteInfo implements Parcelable {
         dest.writeString(id);
         dest.writeString(title);
         dest.writeTypedList(places);
-
+        dest.writeInt(duration);
+        dest.writeString(description);
+        dest.writeDouble(kilometres);
+        dest.writeString(pictureFileName);
     }
 
     public static final Creator<RouteInfo> CREATOR =
