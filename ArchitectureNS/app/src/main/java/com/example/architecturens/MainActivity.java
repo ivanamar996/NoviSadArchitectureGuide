@@ -6,7 +6,11 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import java.util.List;
@@ -23,7 +27,12 @@ public class MainActivity extends AppCompatActivity {
 
     private  void initializeDisplayContent(){
         initializeImages();
-        initializeDuration
+        initializeDuration();
+
+    }
+
+    private void initializeDuration() {
+
     }
 
     private void initializeImages() {
@@ -36,11 +45,20 @@ public class MainActivity extends AppCompatActivity {
         String part1 = parts[0]; // 004
         String part2 = parts[1]; // 034556
         String part = part2;
-        String mDrawableName = splitString(part);
+        String mDrawableName = splitStringByFullstop(part);
         int resID = res.getIdentifier(mDrawableName , "drawable", getPackageName());
         Drawable drawable = res.getDrawable(resID );
         imageView.setImageDrawable(drawable);
-    }
+        imageView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+                public void onClick(View view){
+                    //ovjde ide intent
+                }
+            });
+
+        }
+
 
     private String splitStringByFullstop(String part) {
         String[] parts1 = part.split("\\.");
@@ -48,4 +66,6 @@ public class MainActivity extends AppCompatActivity {
         String part22 = parts1[1]; // 034556
         return  part12;
     }
+
+
 }
