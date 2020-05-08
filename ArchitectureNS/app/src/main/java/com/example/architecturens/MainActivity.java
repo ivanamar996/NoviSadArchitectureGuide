@@ -37,11 +37,12 @@ public class MainActivity extends AppCompatActivity {
 
             RelativeLayout relativeLayout = new RelativeLayout(this);
 
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            relativeLayout.setLayoutParams(params);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            relativeLayout.setLayoutParams(layoutParams);
 
             ImageView imageView = new ImageView(this);
-            ViewGroup.LayoutParams paramsImage = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, getResources().getDisplayMetrics()));
+            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, convertToDp(300));
+            imageView.setLayoutParams(layoutParams);
             imageView.setAdjustViewBounds(true);
             imageView.setPadding(3, 3, 3, 3);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -50,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
             relativeLayout.addView(imageView);
 
             TextView textViewRouteName = new TextView(this);
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(0, convertToDp(150), 0, 0);
+            layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, convertToDp(230), 0, 0);
             textViewRouteName.setLayoutParams(layoutParams);
             textViewRouteName.setAlpha((float) 0.8);
             textViewRouteName.setBackgroundResource(R.color.white);
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             ImageView imageViewHumanWalking = new ImageView(this);
             layoutParams = new RelativeLayout.LayoutParams(convertToDp(30), convertToDp(30));
             RelativeLayout.MarginLayoutParams marginLayoutParams = new RelativeLayout.LayoutParams(layoutParams);
-            marginLayoutParams.setMargins(0, convertToDp(180), 0, 0);
+            marginLayoutParams.setMargins(0, convertToDp(260), 0, 0);
             layoutParams = new RelativeLayout.LayoutParams(marginLayoutParams);
             imageViewHumanWalking.setLayoutParams(layoutParams);
             imageViewHumanWalking.setAdjustViewBounds(true);
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             TextView textViewKm = new TextView(this);
             textViewKm.setId(View.generateViewId());
             layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(convertToDp(30), convertToDp(180), 0, 0);
+            layoutParams.setMargins(convertToDp(30), convertToDp(260), 0, 0);
             textViewKm.setLayoutParams(layoutParams);
             textViewKm.setAlpha((float) 0.8);
             textViewKm.setBackgroundResource(R.color.white);
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             imageViewClock.setId(View.generateViewId());
             layoutParams = new RelativeLayout.LayoutParams(convertToDp(30), convertToDp(30));
             marginLayoutParams = new RelativeLayout.LayoutParams(layoutParams);
-            marginLayoutParams.setMargins(0, convertToDp(180), 0, 0);
+            marginLayoutParams.setMargins(0, convertToDp(260), 0, 0);
             layoutParams = new RelativeLayout.LayoutParams(marginLayoutParams);
             layoutParams.addRule(RelativeLayout.RIGHT_OF, textViewKm.getId());
             imageViewClock.setLayoutParams(layoutParams);
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
             TextView textViewH = new TextView(this);
             layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(0, convertToDp(180), 0, 0);
+            layoutParams.setMargins(0, convertToDp(260), 0, 0);
             layoutParams.addRule(RelativeLayout.RIGHT_OF, imageViewClock.getId());
             textViewH.setLayoutParams(layoutParams);
             textViewH.setAlpha((float) 0.8);
