@@ -22,10 +22,10 @@
                     android:id="@+id/image1"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
-                    app:srcCompat="@drawable/image1"
                     android:adjustViewBounds="true"
+                    android:padding="3dp"
                     android:scaleType="fitXY"
-                    android:padding="3dp"/>
+                    app:srcCompat="@drawable/image1" />
 
                 <TextView
                     android:id="@+id/textView1"
