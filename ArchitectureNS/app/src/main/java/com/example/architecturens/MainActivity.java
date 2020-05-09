@@ -2,6 +2,7 @@ package com.example.architecturens;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout mainLinearLayout = findViewById(R.id.linear_layout);
 
-        for (RouteInfo route : routes) {
+        for (final RouteInfo route : routes) {
 
             RelativeLayout relativeLayout = new RelativeLayout(this);
 
@@ -47,6 +48,14 @@ public class MainActivity extends AppCompatActivity {
             imageView.setPadding(3, 3, 3, 3);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             imageView.setImageResource(getReourceID(route.getPictureFileName()));
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                                          @Override public void onClick(View v) {
+                                              Intent intent = new Intent(MainActivity.this,PlaceActivity.class);
+                                              intent.putExtra(PlaceActivity.PLACE_INFO, route);
+                                              startActivity(intent);
+                                          }
+                                      });
 
             relativeLayout.addView(imageView);
 
