@@ -7,17 +7,20 @@ public final class PlaceInfo implements Parcelable {
     private final String placeId;
     private final String placeTitle;
     private final String placeDescription;
+    private final String pictureFileName;
 
-    public PlaceInfo(String placeId, String placeTitle, String placeDescription) {
+    public PlaceInfo(String placeId, String placeTitle, String placeDescription, String pictureFileName) {
         this.placeId = placeId;
         this.placeTitle = placeTitle;
         this.placeDescription = placeDescription;
+        this.pictureFileName = pictureFileName;
     }
 
     private PlaceInfo(Parcel source) {
         placeId = source.readString();
         placeTitle = source.readString();
         placeDescription = source.readString();
+        pictureFileName = source.readString();
     }
 
 
@@ -26,6 +29,8 @@ public final class PlaceInfo implements Parcelable {
     public String getPlaceTitle() { return placeTitle;}
 
     public String getPlaceDescription() { return placeDescription; }
+
+    public String getPictureFileName() { return pictureFileName; }
 
     @Override
     public int hashCode() {
@@ -42,6 +47,7 @@ public final class PlaceInfo implements Parcelable {
         dest.writeString(placeId);
         dest.writeString(placeTitle);
         dest.writeString(placeDescription);
+        dest.writeString(pictureFileName);
     }
 
     public static final Creator<PlaceInfo> CREATOR =

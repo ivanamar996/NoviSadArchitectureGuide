@@ -1,22 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/place_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PlaceActivity">
+    tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="59dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="124dp"
-        android:layout_marginTop="253dp"
-        android:layout_marginEnd="228dp"
-        android:layout_marginBottom="459dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/linear_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/routeImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:adjustViewBounds="true"
+                    android:padding="3dp"
+                    android:scaleType="fitXY" />
+
+                <Button
+                    android:id="@+id/mapButton"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginLeft="240dp"
+                    android:layout_marginTop="240dp"
+                    android:background="@drawable/button"
+                    android:drawableTop="@drawable/map"
+                    android:padding="5dp" />
+
+            </RelativeLayout>
+            <TextView
+                android:id="@+id/textViewName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="25dp"
+                android:paddingTop="10dp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="90dp"
+                android:layout_marginTop="-25dp">
+
+            <ImageView
+                android:id="@+id/human_walking"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:adjustViewBounds="true"
+                android:padding="3dp"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/human_walking" />
+
+            <TextView
+                android:id="@+id/textViewKm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_toRightOf="@+id/human_walking"
+                android:textSize="18dp" />
+
+            <ImageView
+                android:id="@+id/clock"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_toRightOf="@id/textViewKm"
+                android:adjustViewBounds="true"
+                android:padding="3dp"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/clock" />
+
+            <TextView
+                android:id="@+id/textViewH"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/clock"
+                android:padding="2dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18dp" />
+            <ImageView
+                android:id="@+id/sight"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_toRightOf="@id/textViewH"
+                android:adjustViewBounds="true"
+                android:padding="3dp"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/sight" />
+
+            <TextView
+                android:id="@+id/textViewSight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/sight"
+                android:padding="2dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18dp" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/textViewDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14dp"
+                android:textStyle="normal"/>
+
+            <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true">
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/linear_layout_horizontal"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
