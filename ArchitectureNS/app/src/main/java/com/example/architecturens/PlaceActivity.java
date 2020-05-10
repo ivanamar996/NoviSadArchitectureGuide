@@ -91,6 +91,12 @@ public class PlaceActivity extends AppCompatActivity {
 
     }
 
+    public void onMapButtonClick(View view){
+        Intent intent = new Intent(PlaceActivity.this,MapsActivity.class);
+        intent.putExtra(PlaceActivity.PLACE_INFO, mRouteInfo);
+        startActivity(intent);
+    }
+
     private int getResourceID(String fileName){
 
         Resources res = getResources();

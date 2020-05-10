@@ -37,7 +37,8 @@
                     android:layout_marginTop="240dp"
                     android:background="@drawable/button"
                     android:drawableTop="@drawable/map"
-                    android:padding="5dp" />
+                    android:padding="5dp"
+                    android:onClick="onMapButtonClick"/>
 
             </RelativeLayout>
             <TextView
