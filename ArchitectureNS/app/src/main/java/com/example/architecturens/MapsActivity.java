@@ -5,22 +5,30 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +37,7 @@ import com.google.android.gms.common.util.MapUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
@@ -54,6 +63,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     public static final String PLACE_INFO = "com.example.architecturens.PLACE_INFO";
     private RouteInfo mRouteInfo;
+    private RelativeLayout relativeLayoutCustomView;
+    private TextView textViewPlaceName;
+    private PlaceInfo place;
 
     private Marker customMarker;
     private LatLng markerLatLng;
@@ -75,6 +87,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         placePositions.add(new LatLng(45.255790, 19.845772));
         placePositions.add(new LatLng(45.256132, 19.845423));
         placePositions.add(new LatLng(45.256283, 19.847117));
+
+        relativeLayoutCustomView = findViewById(R.id.relativeLayoutCustomView);
+        textViewPlaceName = findViewById(R.id.placeTitle);
     }
 
     /**
@@ -102,7 +117,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(placePositions.get(0),16));
 
-        for(PlaceInfo place : mRouteInfo.getPlaces()){
+        for(final PlaceInfo place : mRouteInfo.getPlaces()){
 
             count++;
             numTxt.setText(String.valueOf(count));
@@ -115,11 +130,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
 
-        line  = mMap.addPolyline(new PolylineOptions()
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                for(final PlaceInfo p : mRouteInfo.getPlaces()){
+                    if(p.getPlaceTitle().equals(marker.getTitle())){
+                        place = p;
+                        break;
+                    }
+                }
+                displayCustomInfoWindow(marker, place);
+                return true;
+            }
+        });
+
+        line = mMap.addPolyline(new PolylineOptions()
                 .addAll(placePositions)
                 .width(5)
                 .color(ContextCompat.getColor(getApplicationContext(),R.color.green)));
+
     }
+
+
 
     // Convert a view to bitmap
     public static Bitmap createDrawableFromView(Context context, View view) {
@@ -135,6 +167,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         view.draw(canvas);
 
         return bitmap;
+    }
+
+    private void displayCustomInfoWindow(Marker marker, PlaceInfo place) {
+
+        if(place!=null) {
+            relativeLayoutCustomView.setVisibility(View.VISIBLE);
+            textViewPlaceName.setText(marker.getTitle());
+
+            ImageView imageView = findViewById(R.id.placeImage);
+            imageView.setImageResource(getResourceID(place.getPictureFileName()));
+
+        }
+
+    }
+
+    private int getResourceID(String fileName){
+
+        Resources res = getResources();
+
+        String[] pathParts = fileName.split("/");
+        String imageName = pathParts[1];
+
+        String[] partsImgName = imageName.split("\\.");
+        String name = partsImgName[0];
+
+        int resID = res.getIdentifier(name , "drawable", getPackageName());
+
+        return resID;
+    }
+
+    public void onDetailsClick(View view){
+        Log.i("BUTTTTTTTTTTON", "123456");
     }
 
 }

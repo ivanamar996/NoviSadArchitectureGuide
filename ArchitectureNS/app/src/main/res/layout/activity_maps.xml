@@ -14,4 +14,41 @@
     android:layout_height="match_parent"
     tools:context=".MapsActivity" />
 
+    <RelativeLayout
+        android:id="@+id/relativeLayoutCustomView"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible"
+        android:background="@color/green"
+        android:alpha="0.8">
+
+        <ImageView
+            android:id="@+id/placeImage"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:adjustViewBounds="true"
+            android:padding="3dp"
+            android:layout_margin="10dp"
+            android:scaleType="fitXY"/>
+
+        <TextView
+            android:id="@+id/placeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:layout_toEndOf="@id/placeImage"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginLeft="185dp"
+            android:text="Details"
+            android:onClick="onDetailsClick"/>
+    </RelativeLayout>
+
+
 </RelativeLayout>
