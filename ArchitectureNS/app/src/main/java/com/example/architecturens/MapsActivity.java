@@ -148,10 +148,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addAll(placePositions)
                 .width(5)
                 .color(ContextCompat.getColor(getApplicationContext(),R.color.green)));
-
     }
-
-
 
     // Convert a view to bitmap
     public static Bitmap createDrawableFromView(Context context, View view) {
@@ -198,7 +195,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void onDetailsClick(View view){
-        Log.i("BUTTTTTTTTTTON", "123456");
+        Intent intent = new Intent(MapsActivity.this,PlaceInfoActivity.class);
+        intent.putExtra(PlaceActivity.PLACE_INFO, place);
+        startActivity(intent);
     }
 
 }
