@@ -134,6 +134,89 @@ public class MainActivity extends AppCompatActivity {
 
             mainLinearLayout.addView(relativeLayout);
         }
+
+        //recommended places
+
+        LinearLayout recommededPlaces = findViewById(R.id.linear_layout_recommended);
+
+        PlaceInfo place1 = routes.get(0).getPlaces().get(0);
+        PlaceInfo place2 = routes.get(0).getPlaces().get(1);
+
+        RelativeLayout relativeLayout = new RelativeLayout(this);
+
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        relativeLayout.setLayoutParams(layoutParams);
+
+        ImageView imageViewPlace = new ImageView(this);
+        layoutParams = new RelativeLayout.LayoutParams(convertToDp(180), convertToDp(180));
+        imageViewPlace.setLayoutParams(layoutParams);
+        imageViewPlace.setAdjustViewBounds(true);
+        imageViewPlace.setPadding(3, 3, 3, 3);
+        imageViewPlace.setScaleType(ImageView.ScaleType.FIT_XY);
+        imageViewPlace.setImageResource(getReourceID(place1.getPictureFileName()));
+
+        imageViewPlace.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                // intent za place info activity
+            }
+        });
+
+        relativeLayout.addView(imageViewPlace);
+
+        TextView textViewPlaceName = new TextView(this);
+        layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(convertToDp(10), convertToDp(150), 0, 0);
+        textViewPlaceName.setLayoutParams(layoutParams);
+        textViewPlaceName.setAlpha((float) 0.8);
+        textViewPlaceName.setBackgroundResource(R.color.white);
+        textViewPlaceName.setPadding(2, 2, 2, 2);
+        textViewPlaceName.setText(place1.getPlaceTitle());
+        textViewPlaceName.setTextColor(Color.BLACK);
+        textViewPlaceName.setTextSize(16);
+
+
+        relativeLayout.addView(textViewPlaceName);
+
+        recommededPlaces.addView(relativeLayout);
+
+        RelativeLayout relativeLayout1 = new RelativeLayout(this);
+
+        RelativeLayout.LayoutParams layoutParams1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        relativeLayout1.setLayoutParams(layoutParams1);
+
+        ImageView imageViewPlace1 = new ImageView(this);
+        layoutParams1 = new RelativeLayout.LayoutParams(convertToDp(180), convertToDp(180));
+        imageViewPlace1.setLayoutParams(layoutParams1);
+        imageViewPlace1.setAdjustViewBounds(true);
+        imageViewPlace1.setPadding(3, 3, 3, 3);
+        imageViewPlace1.setScaleType(ImageView.ScaleType.FIT_XY);
+        imageViewPlace1.setImageResource(getReourceID(place2.getPictureFileName()));
+
+        imageViewPlace1.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                // intent za place info activity
+            }
+        });
+
+        relativeLayout1.addView(imageViewPlace1);
+
+        TextView textViewPlaceName1 = new TextView(this);
+        layoutParams1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams1.setMargins(convertToDp(10), convertToDp(150), 0, 0);
+        textViewPlaceName1.setLayoutParams(layoutParams1);
+        textViewPlaceName1.setAlpha((float) 0.8);
+        textViewPlaceName1.setBackgroundResource(R.color.white);
+        textViewPlaceName1.setPadding(2, 2, 2, 2);
+        textViewPlaceName1.setText(place2.getPlaceTitle());
+        textViewPlaceName1.setTextColor(Color.BLACK);
+        textViewPlaceName1.setTextSize(16);
+
+
+        relativeLayout1.addView(textViewPlaceName1);
+
+        recommededPlaces.addView(relativeLayout1);
+
+
     }
 
    private int convertToDp(int value){

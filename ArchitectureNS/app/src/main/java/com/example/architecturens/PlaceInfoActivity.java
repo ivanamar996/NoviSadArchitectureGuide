@@ -31,6 +31,7 @@ public class PlaceInfoActivity extends AppCompatActivity {
     }
 
     private void getIntentAndDisplayValues() {
+
         Intent intent = getIntent();
         placeInfo = intent.getParcelableExtra(PLACE_INFO);
 
