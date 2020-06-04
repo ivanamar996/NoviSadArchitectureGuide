@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:id="@+id/set1" android:title="setting1" android:icon="@drawable/ic_set"/>
+    <item android:id="@+id/set2" android:title="setting2"/>
+    <item android:id="@+id/set3" android:title="setting3"/>
+    <item android:id="@+id/set4" android:title="setting4"/>
+    <item android:id="@+id/set5" android:title="setting5"/>
+</menu>
