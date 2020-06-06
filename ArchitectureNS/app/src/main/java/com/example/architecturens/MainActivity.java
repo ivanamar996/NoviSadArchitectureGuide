@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     public void selectItemDrawer(MenuItem menuItem){
         Fragment myFragment = null;
         Class fragmentClass;
+        LinearLayout scroll = (LinearLayout) findViewById(R.id.scrolllinear);
+        scroll.setVisibility(LinearLayout.GONE);
         switch (menuItem.getItemId()) {
             case R.id.language:
                 fragmentClass = Language.class;
@@ -85,8 +87,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void SetupDrawerContent(NavigationView navigationView) {
-        LinearLayout scroll = (LinearLayout) findViewById(R.id.scrolllinear);
-        scroll.setVisibility(LinearLayout.GONE);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
