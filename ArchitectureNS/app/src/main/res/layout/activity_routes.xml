@@ -6,9 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+    <FrameLayout
+        android:id="@+id/flayoutcontent"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+    </FrameLayout>
+
 
     <com.google.android.material.navigation.NavigationView
         app:headerLayout="@layout/nav_drawer_header"
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@color/white"
@@ -18,59 +25,63 @@
         android:layout_gravity="start">
     </com.google.android.material.navigation.NavigationView>
 
-    <ScrollView
-        android:id="@+id/scrollview"
+
+    <LinearLayout
+        android:id="@+id/scrolllinear"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/linear_layout1"
+        <ScrollView
+            android:id="@+id/scrollview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/linear_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/linear_layout1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/green"
-                android:textSize="18dp"
-                android:text="Self-guided tours"
-                android:textStyle="bold"
-                android:layout_margin="5dp"/>
-        </LinearLayout>
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/green"
-                android:textSize="18dp"
-                android:text="Recommended places"
-                android:textStyle="bold"
-                android:layout_margin="5dp"/>
-
-            <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fillViewport="true">
-
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/linear_layout_recommended"
-                    android:orientation="horizontal"
+                <LinearLayout
+                    android:id="@+id/linear_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/green"
+                        android:textSize="18dp"
+                        android:text="Self-guided tours"
+                        android:textStyle="bold"
+                        android:layout_margin="5dp"/>
                 </LinearLayout>
-            </HorizontalScrollView>
 
-        </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/green"
+                    android:textSize="18dp"
+                    android:text="Recommended places"
+                    android:textStyle="bold"
+                    android:layout_margin="5dp"/>
 
-    </ScrollView>
+                <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fillViewport="true">
 
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/linear_layout_recommended"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
+        </ScrollView>
+    </LinearLayout>
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

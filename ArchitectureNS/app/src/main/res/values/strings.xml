@@ -3,4 +3,14 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="title_activity_maps">Map</string>
+
+    <!-- for fragments -->
+    <string name="set_language">Set language</string>
+    <string name="set_location">Set location</string>
+    <string name="rate_app">Rate app</string>
+    <string name="about_app">About app</string>
+
+
+
+
 </resources>

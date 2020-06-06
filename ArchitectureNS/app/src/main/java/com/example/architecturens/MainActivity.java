@@ -1,21 +1,30 @@
 package com.example.architecturens;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
@@ -32,11 +41,61 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout=(DrawerLayout) findViewById(R.id.drawer);
         mToggle=new ActionBarDrawerToggle(this, mDrawerLayout,R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
+        NavigationView navigationView= (NavigationView) findViewById(R.id.nav_view) ;
         mToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        SetupDrawerContent(navigationView);
         initializeDisplayContent();
+
     }
+
+    public void selectItemDrawer(MenuItem menuItem){
+        Fragment myFragment = null;
+        Class fragmentClass;
+        switch (menuItem.getItemId()) {
+            case R.id.language:
+                fragmentClass = Language.class;
+                break;
+            case R.id.location:
+                fragmentClass = Location.class;
+                break;
+            case R.id.rate:
+                fragmentClass = RateApp.class;
+                break;
+            case R.id.about:
+                fragmentClass = AboutApp.class;
+                break;
+            default:
+                fragmentClass = Language.class;
+        }
+
+        try{
+            myFragment= (Fragment) fragmentClass.newInstance();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flayoutcontent,myFragment).commit();
+        menuItem.setChecked(true);
+        setTitle(menuItem.getTitle());
+        mDrawerLayout.closeDrawers();
+
+    }
+
+    private void SetupDrawerContent(NavigationView navigationView) {
+        LinearLayout scroll = (LinearLayout) findViewById(R.id.scrolllinear);
+        scroll.setVisibility(LinearLayout.GONE);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                selectItemDrawer(item);
+                return true;
+            }
+        });
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
