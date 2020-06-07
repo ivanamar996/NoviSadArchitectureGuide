@@ -22,6 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
@@ -46,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SetupDrawerContent(navigationView);
         initializeDisplayContent();
+
+        LinearLayout scroll = (LinearLayout) findViewById(R.id.scrolllinear);
+        scroll.setVisibility(LinearLayout.VISIBLE);
+        ScrollView sc = (ScrollView) findViewById(R.id.scrollview);
+        sc.setSmoothScrollingEnabled(true);
+
 
     }
 
@@ -107,7 +114,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initializeDisplayContent() {
-
+        LinearLayout scroll = (LinearLayout) findViewById(R.id.scrolllinear);
+        scroll.setVisibility(LinearLayout.VISIBLE);
         DataManager dataManager = DataManager.getInstance();
         List<RouteInfo> routes = dataManager.getRoutes();
 
