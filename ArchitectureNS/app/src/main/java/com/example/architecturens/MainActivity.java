@@ -47,13 +47,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SetupDrawerContent(navigationView);
         initializeDisplayContent();
-
-        LinearLayout scroll = (LinearLayout) findViewById(R.id.scrolllinear);
-        scroll.setVisibility(LinearLayout.VISIBLE);
-        ScrollView sc = (ScrollView) findViewById(R.id.scrollview);
-        sc.setSmoothScrollingEnabled(true);
-
-
     }
 
     public void selectItemDrawer(MenuItem menuItem){
@@ -86,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flayoutcontent,myFragment).commit();
+        fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.flayoutcontent,myFragment).commit();
         menuItem.setChecked(true);
         setTitle(menuItem.getTitle());
         mDrawerLayout.closeDrawers();
@@ -103,6 +96,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }else{
+            //getSupportFragmentManager().popBackStack(null,FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            LinearLayout scroll = (LinearLayout) findViewById(R.id.scrolllinear);
+            scroll.setVisibility(LinearLayout.VISIBLE);
+            setTitle("ArchitecureNS");
+            super.onBackPressed();
+        }
+
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -114,8 +122,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initializeDisplayContent() {
-        LinearLayout scroll = (LinearLayout) findViewById(R.id.scrolllinear);
-        scroll.setVisibility(LinearLayout.VISIBLE);
         DataManager dataManager = DataManager.getInstance();
         List<RouteInfo> routes = dataManager.getRoutes();
 
