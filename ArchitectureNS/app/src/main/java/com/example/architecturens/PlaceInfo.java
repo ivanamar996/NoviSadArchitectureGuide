@@ -3,10 +3,16 @@ package com.example.architecturens;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 public final class PlaceInfo implements Parcelable {
+    @SerializedName("placeId")
     private final String placeId;
+    @SerializedName("placeTitle")
     private final String placeTitle;
+    @SerializedName("placeDescription")
     private final String placeDescription;
+    @SerializedName("pictureFileName")
     private final String pictureFileName;
 
     public PlaceInfo(String placeId, String placeTitle, String placeDescription, String pictureFileName) {

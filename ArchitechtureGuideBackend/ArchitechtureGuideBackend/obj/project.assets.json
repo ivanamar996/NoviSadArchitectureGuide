@@ -13183,23 +13183,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Ivana\\.nuget\\packages\\": {},
+    "C:\\Users\\Nenad_Milinkovic\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Ivana\\Desktop\\gitAndroid\\NoviSadArchitectureGuide\\ArchitechtureGuideBackend\\ArchitechtureGuideBackend\\ArchitechtureGuideBackend.csproj",
+      "projectUniqueName": "G:\\AndroidApps\\PMA-2020\\ArchitechtureGuideBackend\\ArchitechtureGuideBackend\\ArchitechtureGuideBackend.csproj",
       "projectName": "ArchitechtureGuideBackend",
-      "projectPath": "C:\\Users\\Ivana\\Desktop\\gitAndroid\\NoviSadArchitectureGuide\\ArchitechtureGuideBackend\\ArchitechtureGuideBackend\\ArchitechtureGuideBackend.csproj",
-      "packagesPath": "C:\\Users\\Ivana\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Ivana\\Desktop\\gitAndroid\\NoviSadArchitectureGuide\\ArchitechtureGuideBackend\\ArchitechtureGuideBackend\\obj\\",
+      "projectPath": "G:\\AndroidApps\\PMA-2020\\ArchitechtureGuideBackend\\ArchitechtureGuideBackend\\ArchitechtureGuideBackend.csproj",
+      "packagesPath": "C:\\Users\\Nenad_Milinkovic\\.nuget\\packages\\",
+      "outputPath": "G:\\AndroidApps\\PMA-2020\\ArchitechtureGuideBackend\\ArchitechtureGuideBackend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Ivana\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Nenad_Milinkovic\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -13254,10 +13254,16 @@
           }
         },
         "imports": [
-          "net461"
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
         ],
         "assetTargetFallback": true,
-        "warn": true
+        "warn": true,
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
       }
     }
   }

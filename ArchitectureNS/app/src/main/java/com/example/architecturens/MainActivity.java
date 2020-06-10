@@ -7,24 +7,30 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.NetworkConnection.DBContentProvider;
+import com.example.NetworkConnection.DbConnection;
+import com.example.NetworkConnection.RouteSQLiteHelper;
+import com.example.service.GetDataService;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
@@ -38,6 +44,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_routes);
+
+        Uri uri = DBContentProvider.CONTENT_URI_ROUTE;
+        final GetDataService service = DbConnection.getRetrofitInstance().create(GetDataService.class);
+        RouteSQLiteHelper dbHelper = new RouteSQLiteHelper(MainActivity.this);
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        Call<List<RouteInfo>> call = service.getAllRoutes();
+        call.enqueue(new Callback<List<RouteInfo>>() {
+            @Override
+            public void onResponse(Call<List<RouteInfo>> call, Response<List<RouteInfo>> response) {
+                Toast.makeText(MainActivity.this, "usao 1", Toast.LENGTH_SHORT).show();
+
+
+            }
+
+            @Override
+            public void onFailure(Call<List<RouteInfo>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
 
         mDrawerLayout=(DrawerLayout) findViewById(R.id.drawer);
         mToggle=new ActionBarDrawerToggle(this, mDrawerLayout,R.string.open, R.string.close);

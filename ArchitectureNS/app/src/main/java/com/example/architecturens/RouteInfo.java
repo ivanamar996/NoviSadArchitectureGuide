@@ -3,16 +3,25 @@ package com.example.architecturens;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public final class RouteInfo implements Parcelable {
+    @SerializedName("id")
     private final String id;
+    @SerializedName("title")
     private final String title;
+    @SerializedName("places")
     private final List<PlaceInfo> places;
-    private final int duration;
+    @SerializedName("duration")
+    private final Integer duration;
+    @SerializedName("description")
     private  final String description;
-    private final double kilometres;
+    @SerializedName("kilometres")
+    private final Double kilometres;
+    @SerializedName("pictureFileName")
     private final String pictureFileName;
 
 
