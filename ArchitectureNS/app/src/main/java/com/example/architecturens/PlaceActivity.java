@@ -29,7 +29,7 @@ public class PlaceActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mRouteInfo = intent.getParcelableExtra(PLACE_INFO);
         ImageView imageView = findViewById(R.id.routeImageView);
-        imageView.setImageResource(getResourceID(mRouteInfo.getPictureFileName()));
+        //imageView.setImageResource(getResourceID(mRouteInfo.getImage()));
 
         TextView textViewName = findViewById(R.id.textViewName);
         textViewName.setText(mRouteInfo.getTitle());
@@ -61,7 +61,7 @@ public class PlaceActivity extends AppCompatActivity {
             imageViewPlace.setAdjustViewBounds(true);
             imageViewPlace.setPadding(3, 3, 3, 3);
             imageViewPlace.setScaleType(ImageView.ScaleType.FIT_XY);
-            imageViewPlace.setImageResource(getResourceID(place.getPictureFileName()));
+           // imageViewPlace.setImageResource(getResourceID(place.getPictureFileName()));
 
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
@@ -78,7 +78,7 @@ public class PlaceActivity extends AppCompatActivity {
             textViewPlaceName.setAlpha((float) 0.8);
             textViewPlaceName.setBackgroundResource(R.color.white);
             textViewPlaceName.setPadding(2, 2, 2, 2);
-            textViewPlaceName.setText(place.getPlaceTitle());
+            textViewPlaceName.setText(place.getTitle());
             textViewPlaceName.setTextColor(Color.BLACK);
             textViewPlaceName.setTextSize(16);
 

@@ -2,51 +2,45 @@ package com.example.architecturens;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.google.gson.annotations.SerializedName;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public final class RouteInfo implements Parcelable {
-    @SerializedName("id")
-    private final String id;
-    @SerializedName("title")
-    private final String title;
-    @SerializedName("places")
-    private final List<PlaceInfo> places;
-    @SerializedName("duration")
-    private final Integer duration;
-    @SerializedName("description")
-    private  final String description;
-    @SerializedName("kilometres")
-    private final Double kilometres;
-    @SerializedName("pictureFileName")
-    private final String pictureFileName;
 
+    private Integer id;
+    private String title;
+    private List<PlaceInfo> places;
+    private Double duration;
+    private String description;
+    private Double kilometres;
+    private byte[] image;
 
-    public RouteInfo(String id, String title, List<PlaceInfo> places, int duration, String description, double kilometres, String pictureFileName) {
+    private RouteInfo(Parcel source) {
+        id = source.readInt();
+        title = source.readString();
+        places = new ArrayList<>();
+        source.readTypedList(places, PlaceInfo.CREATOR);
+        duration=source.readDouble();
+        description=source.readString();
+        kilometres=source.readDouble();
+        image = new byte[0];
+        source.readByteArray(image);
+    }
+
+    public RouteInfo(Integer id, String title, List<PlaceInfo> places, Double duration, String description, Double kilometres, byte[] image) {
         this.id = id;
         this.title = title;
         this.places = places;
         this.duration = duration;
         this.description = description;
         this.kilometres = kilometres;
-        this.pictureFileName = pictureFileName;
+        this.image = image;
     }
 
-    private RouteInfo(Parcel source) {
-        id = source.readString();
-        title = source.readString();
-        places = new ArrayList<>();
-        source.readTypedList(places, PlaceInfo.CREATOR);
-        duration=source.readInt();
-        description=source.readString();
-        kilometres=source.readDouble();
-        pictureFileName=source.readString();
-    }
+    public RouteInfo(){}
 
-    public String getId() {
+
+    public Integer getId() {
         return id;
     }
 
@@ -56,17 +50,17 @@ public final class RouteInfo implements Parcelable {
 
     public List<PlaceInfo> getPlaces() {return places;}
 
-    public int getDuration() {return  duration;}
+    public double getDuration() {return  duration;}
 
     public String getDescription() {return  description;}
 
     public double getKilometres() {return kilometres;}
 
-    public String getPictureFileName() {return pictureFileName;}
+    public byte[] getImage() {return image;}
 
     public PlaceInfo getPlace(String placeId) {
         for(PlaceInfo placeInfo: places) {
-            if(placeId.equals(placeInfo.getPlaceId()))
+            if(placeId.equals(placeInfo.getId()))
                 return placeInfo;
         }
         return null;
@@ -99,13 +93,13 @@ public final class RouteInfo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
+        dest.writeInt(id);
         dest.writeString(title);
         dest.writeTypedList(places);
-        dest.writeInt(duration);
+        dest.writeDouble(duration);
         dest.writeString(description);
         dest.writeDouble(kilometres);
-        dest.writeString(pictureFileName);
+        dest.writeByteArray(image);
     }
 
     public static final Creator<RouteInfo> CREATOR =

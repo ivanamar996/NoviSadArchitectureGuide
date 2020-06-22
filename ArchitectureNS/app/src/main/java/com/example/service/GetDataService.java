@@ -11,7 +11,7 @@ import retrofit2.http.GET;
 
 public interface GetDataService {
 
-    @GET("/api/RouteInfo")
-    Call<List<RouteInfo>> getAllRoutes();
+    @GET("/getAllRoutes")
+    Call<String> getAllRoutes();
 
 }

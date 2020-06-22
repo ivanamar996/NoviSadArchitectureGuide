@@ -3,44 +3,46 @@ package com.example.architecturens;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.SerializedName;
 
 public final class PlaceInfo implements Parcelable {
-    @SerializedName("placeId")
-    private final String placeId;
-    @SerializedName("placeTitle")
-    private final String placeTitle;
-    @SerializedName("placeDescription")
-    private final String placeDescription;
-    @SerializedName("pictureFileName")
-    private final String pictureFileName;
 
-    public PlaceInfo(String placeId, String placeTitle, String placeDescription, String pictureFileName) {
-        this.placeId = placeId;
-        this.placeTitle = placeTitle;
-        this.placeDescription = placeDescription;
-        this.pictureFileName = pictureFileName;
-    }
+    private final Integer id;
+    private final String title;
+    private final String description;
+    private final byte[] image;
+    private final Double grade;
+    private final Double latitude;
+    private final Double longitude;
+    private final RouteInfo routeInfo;
+
 
     private PlaceInfo(Parcel source) {
-        placeId = source.readString();
-        placeTitle = source.readString();
-        placeDescription = source.readString();
-        pictureFileName = source.readString();
+        id = source.readInt();
+        title = source.readString();
+        description = source.readString();
+        image = new byte[0];
+        source.readByteArray(image);
+        grade = source.readDouble();
+        latitude = source.readDouble();
+        longitude = source.readDouble();
+        routeInfo = source.readParcelable(getClass().getClassLoader());
     }
 
+    public PlaceInfo(Integer id, String title, String description, byte[] image, Double grade, Double latitude, Double longitude, RouteInfo routeInfo) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.image = image;
+        this.grade = grade;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.routeInfo = routeInfo;
+    }
 
-    public String getPlaceId() { return placeId;}
-
-    public String getPlaceTitle() { return placeTitle;}
-
-    public String getPlaceDescription() { return placeDescription; }
-
-    public String getPictureFileName() { return pictureFileName; }
 
     @Override
     public int hashCode() {
-        return placeId.hashCode();
+        return id.hashCode();
     }
 
     @Override
@@ -50,10 +52,14 @@ public final class PlaceInfo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(placeId);
-        dest.writeString(placeTitle);
-        dest.writeString(placeDescription);
-        dest.writeString(pictureFileName);
+        dest.writeInt(id);
+        dest.writeString(title);
+        dest.writeString(description);
+        dest.writeByteArray(image);
+        dest.writeDouble(grade);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+        dest.writeParcelable(routeInfo, flags);
     }
 
     public static final Creator<PlaceInfo> CREATOR =
@@ -69,4 +75,37 @@ public final class PlaceInfo implements Parcelable {
                     return new PlaceInfo[size];
                 }
             };
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public Double getGrade() {
+        return grade;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public RouteInfo getRouteInfo() {
+        return routeInfo;
+    }
+
 }

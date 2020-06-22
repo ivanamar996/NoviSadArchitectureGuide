@@ -36,10 +36,10 @@ public class PlaceInfoActivity extends AppCompatActivity {
         placeInfo = intent.getParcelableExtra(PLACE_INFO);
 
         TextView textView = findViewById(R.id.textViewPlaceName);
-        textView.setText(placeInfo.getPlaceTitle());
+        textView.setText(placeInfo.getTitle());
 
         ImageView imageView = findViewById(R.id.placeImageView);
-        imageView.setImageResource(getResourceID(placeInfo.getPictureFileName()));
+        //imageView.setImageResource(getResourceID(placeInfo.getPictureFileName()));
 
         SeekBar seekBar = findViewById(R.id.scrubSeekBar);
         seekBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.SRC_IN);
@@ -50,7 +50,7 @@ public class PlaceInfoActivity extends AppCompatActivity {
         drawable.setColorFilter(getResources().getColor(R.color.gold),PorterDuff.Mode.SRC_ATOP);
 
         TextView textViewDesc = findViewById(R.id.placeDescription);
-        textViewDesc.setText(placeInfo.getPlaceDescription());
+        textViewDesc.setText(placeInfo.getDescription());
 
 
     }

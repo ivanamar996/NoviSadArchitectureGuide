@@ -1,12 +1,12 @@
 package com.example.architecturens;
 
-import com.google.gson.annotations.SerializedName;
+//import com.google.gson.annotations.SerializedName;
 
 public class DatabaseVersion {
-    @SerializedName("id")
+   // @SerializedName("id")
     private Integer id;
 
-    @SerializedName("version")
+   // @SerializedName("version")
     private Integer version;
 
     public Integer getId() {

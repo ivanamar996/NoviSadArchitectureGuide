@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataManager {
-    private static DataManager singleInstance=null;
+   /* private static DataManager singleInstance=null;
 
     private List<RouteInfo> mRouteInfos=new ArrayList<>();
     //private List<PlaceInfo> mPlaceInfos=new ArrayList<>();
@@ -38,7 +38,7 @@ public class DataManager {
                 places.add(place);
         }
         return places;
-    }*/
+    }
    private DataManager() {
    }
 
@@ -72,6 +72,6 @@ public class DataManager {
         places.add(new PlaceInfo("place2", "Kafici", "Porta se nalazi iza katedrale i sadrzi veci broj ugostiteljskih objekata.", ""));
         places.add(new PlaceInfo("place3", "Plaza", "Navedena ulica predstavlja setaliste i nema saobrcaja u njoj. Ljudi rado setaju tom ulicom.", ""));
         return new RouteInfo("route3", "Strand", places, 3, "Strand grada je jako lijep i prepun raskosnih gradjevina iz doba austrougarske.", 10,"drawable/image3.jpg" );
-    }
+    }*/
 }
 

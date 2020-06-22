@@ -124,7 +124,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             customMarker = mMap.addMarker(new MarkerOptions()
                     .position(placePositions.get(count-1))
-                    .title(place.getPlaceTitle())
+                    .title(place.getTitle())
                     .snippet("Snippet")
                     .icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(this, marker))));
 
@@ -134,7 +134,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 for(final PlaceInfo p : mRouteInfo.getPlaces()){
-                    if(p.getPlaceTitle().equals(marker.getTitle())){
+                    if(p.getTitle().equals(marker.getTitle())){
                         place = p;
                         break;
                     }
@@ -173,7 +173,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             textViewPlaceName.setText(marker.getTitle());
 
             ImageView imageView = findViewById(R.id.placeImage);
-            imageView.setImageResource(getResourceID(place.getPictureFileName()));
+            //imageView.setImageResource(getResourceID(place.getPictureFileName()));
 
         }
 

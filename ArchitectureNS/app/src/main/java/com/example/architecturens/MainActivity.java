@@ -17,6 +17,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,29 +42,37 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mToggle;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_routes);
+    protected void onResume(){
+        super.onResume();
 
         Uri uri = DBContentProvider.CONTENT_URI_ROUTE;
         final GetDataService service = DbConnection.getRetrofitInstance().create(GetDataService.class);
         RouteSQLiteHelper dbHelper = new RouteSQLiteHelper(MainActivity.this);
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        Call<List<RouteInfo>> call = service.getAllRoutes();
-        call.enqueue(new Callback<List<RouteInfo>>() {
+        Call<String> call = service.getAllRoutes();
+        call.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<List<RouteInfo>> call, Response<List<RouteInfo>> response) {
+            public void onResponse(Call<String> call, Response<String> response) {
                 Toast.makeText(MainActivity.this, "usao 1", Toast.LENGTH_SHORT).show();
+
+                Log.i("Listaa response: ",response.message());
+                //Log.i("Listaa call: ",call.toString());
 
 
             }
 
             @Override
-            public void onFailure(Call<List<RouteInfo>> call, Throwable t) {
+            public void onFailure(Call<String> call, Throwable t) {
                 Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_routes);
 
         mDrawerLayout=(DrawerLayout) findViewById(R.id.drawer);
         mToggle=new ActionBarDrawerToggle(this, mDrawerLayout,R.string.open, R.string.close);
@@ -148,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initializeDisplayContent() {
-        DataManager dataManager = DataManager.getInstance();
+        /*DataManager dataManager = DataManager.getInstance();
         List<RouteInfo> routes = dataManager.getRoutes();
 
         LinearLayout mainLinearLayout = findViewById(R.id.linear_layout);
@@ -333,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
 
         relativeLayout1.addView(textViewPlaceName1);
 
-        recommededPlaces.addView(relativeLayout1);
+        recommededPlaces.addView(relativeLayout1);*/
 
 
     }
