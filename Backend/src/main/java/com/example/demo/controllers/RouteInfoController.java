@@ -115,7 +115,8 @@ public class RouteInfoController {
         String json = "";
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            json = objectMapper.writer().withRootName("routes").writeValueAsString(routes);
+            //json = objectMapper.writer().withRootName("routes").writeValueAsString(routes);
+            json = objectMapper.writer().writeValueAsString(routes);
             System.out.println(json);
         } catch(Exception e) {
             e.printStackTrace();

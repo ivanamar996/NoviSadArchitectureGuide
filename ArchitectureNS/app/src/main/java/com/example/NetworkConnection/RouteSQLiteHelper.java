@@ -15,11 +15,15 @@ public class RouteSQLiteHelper  extends SQLiteOpenHelper {
     public static final String COLUMN_DURATION = "duration";
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_KILOMETRES = "kilometres";
-    public static final String COLUMN_PICTURE_FILE_NAME = "picture";
+    public static final String COLUMN_IMAGE = "image";
 
     public static final String TABLE_PLACE_INFO = "place_info";
     public static final String COLUMN_PLACE_TITLE = "place_title";
     public static final String COLUMN_PLACE_DESCRIPTION = "place_description";
+    public static final String COLUMN_PLACE_IMAGE = "place_image";
+    public static final String COLUMN_PLACE_GRADE = "place_grade";
+    public static final String COLUMN_PLACE_LATITUDE = "place_latitude";
+    public static final String COLUMN_PLACE_LONGITUDE = "place_longitude";
     public static final String COLUMN_ROUTE_ID = "route_id";
 
 
@@ -34,7 +38,7 @@ public class RouteSQLiteHelper  extends SQLiteOpenHelper {
             + COLUMN_TITLE + " text, "
             + COLUMN_DESCRIPTION + " text, "
             + COLUMN_KILOMETRES + " double, "
-            + COLUMN_PICTURE_FILE_NAME + " text "
+            + COLUMN_IMAGE+ " text "
             + ")";
 
     private static final String DB_CREATE_TABLE_PLACE_INFO = "create table "
@@ -42,8 +46,11 @@ public class RouteSQLiteHelper  extends SQLiteOpenHelper {
             + COLUMN_ID  + " text primary key, "
             + COLUMN_PLACE_TITLE + " text, "
             + COLUMN_PLACE_DESCRIPTION + " real, "
-            + COLUMN_PICTURE_FILE_NAME + " real, "
-            + COLUMN_ROUTE_ID + " integer "
+            + COLUMN_PLACE_IMAGE + " text, "
+            + COLUMN_ROUTE_ID + "integer,"
+            + COLUMN_PLACE_GRADE + " integer,"
+            + COLUMN_PLACE_LATITUDE + "real,"
+            + COLUMN_PLACE_LONGITUDE + "real"
             + ")";
 
     @Override

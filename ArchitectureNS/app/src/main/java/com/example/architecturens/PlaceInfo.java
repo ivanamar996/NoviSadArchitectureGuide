@@ -15,6 +15,18 @@ public final class PlaceInfo implements Parcelable {
     private final Double longitude;
     private final RouteInfo routeInfo;
 
+    public PlaceInfo(){
+        id = -1;
+        title = "";
+        description = "";
+        image = new byte[0];
+        grade = 0.0;
+        latitude = 0.0;
+        longitude = 0.0;
+        routeInfo = null;
+
+    }
+
 
     private PlaceInfo(Parcel source) {
         id = source.readInt();
@@ -38,7 +50,6 @@ public final class PlaceInfo implements Parcelable {
         this.longitude = longitude;
         this.routeInfo = routeInfo;
     }
-
 
     @Override
     public int hashCode() {
@@ -107,5 +118,7 @@ public final class PlaceInfo implements Parcelable {
     public RouteInfo getRouteInfo() {
         return routeInfo;
     }
+
+
 
 }

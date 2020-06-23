@@ -7,6 +7,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import okhttp3.Route;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,9 +34,13 @@ import com.example.NetworkConnection.DBContentProvider;
 import com.example.NetworkConnection.DbConnection;
 import com.example.NetworkConnection.RouteSQLiteHelper;
 import com.example.service.GetDataService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -54,11 +60,15 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Toast.makeText(MainActivity.this, "usao 1", Toast.LENGTH_SHORT).show();
 
-                Log.i("Listaa response: ",response.message());
-                //Log.i("Listaa call: ",call.toString());
+                ObjectMapper objectMapper = new ObjectMapper();
 
+                try {
+                    RouteInfo[] routes = objectMapper.readValue(response.body(), RouteInfo[].class);
+                    List<RouteInfo> routeList = Arrays.asList(routes);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             }
 
