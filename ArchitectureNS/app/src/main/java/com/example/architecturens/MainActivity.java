@@ -13,6 +13,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
@@ -44,17 +45,18 @@ import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
+
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
+    private Uri routeUri;
+    private Uri placeUri;
 
     @Override
     protected void onResume(){
         super.onResume();
 
-        Uri uri = DBContentProvider.CONTENT_URI_ROUTE;
         final GetDataService service = DbConnection.getRetrofitInstance().create(GetDataService.class);
         RouteSQLiteHelper dbHelper = new RouteSQLiteHelper(MainActivity.this);
-        final SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         Call<String> call = service.getAllRoutes();
         call.enqueue(new Callback<String>() {
@@ -66,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     RouteInfo[] routes = objectMapper.readValue(response.body(), RouteInfo[].class);
                     List<RouteInfo> routeList = Arrays.asList(routes);
+
+                    saveToDatabase(routeList);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -79,9 +84,41 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void saveToDatabase(List<RouteInfo> routeList){
+
+        ContentValues values =  new ContentValues();
+        ContentValues placeValues =  new ContentValues();
+
+        for(RouteInfo route : routeList){
+
+            values.put(RouteSQLiteHelper.COLUMN_ID, route.getId());
+            values.put(RouteSQLiteHelper.COLUMN_ROUTE_DURATION, route.getDuration());
+            values.put(RouteSQLiteHelper.COLUMN_ROUTE_TITLE, route.getTitle());
+            values.put(RouteSQLiteHelper.COLUMN_ROUTE_DESCRIPTION, route.getDescription());
+            values.put(RouteSQLiteHelper.COLUMN_ROUTE_KILOMETRES, route.getKilometres());
+            values.put(RouteSQLiteHelper.COLUMN_ROUTE_IMAGE, route.getImage());
+
+            routeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_ROUTE, values);
+
+            for(PlaceInfo place : route.getPlaces()){
+
+                placeValues.put(RouteSQLiteHelper.COLUMN_PLACE_ID,place.getId());
+                placeValues.put(RouteSQLiteHelper.COLUMN_PLACE_TITLE,place.getTitle());
+                placeValues.put(RouteSQLiteHelper.COLUMN_PLACE_DESCRIPTION,place.getDescription());
+                placeValues.put(RouteSQLiteHelper.COLUMN_PLACE_IMAGE,place.getImage());
+                placeValues.put(RouteSQLiteHelper.COLUMN_ROUTE_ID,route.getId());
+                placeValues.put(RouteSQLiteHelper.COLUMN_PLACE_GRADE,place.getGrade());
+                placeValues.put(RouteSQLiteHelper.COLUMN_PLACE_LATITUDE,place.getLatitude());
+                placeValues.put(RouteSQLiteHelper.COLUMN_PLACE_LONGITUDE,place.getLongitude());
+
+                placeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_PLACE, placeValues);
+            }
+        }
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
         setContentView(R.layout.activity_routes);
 
         mDrawerLayout=(DrawerLayout) findViewById(R.id.drawer);
@@ -89,8 +126,11 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(mToggle);
         NavigationView navigationView= (NavigationView) findViewById(R.id.nav_view) ;
         mToggle.syncState();
+        routeUri = (bundle == null) ? null : (Uri) bundle.getParcelable(DBContentProvider.CONTENT_ITEM_TYpe);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SetupDrawerContent(navigationView);
+
+
         initializeDisplayContent();
     }
 

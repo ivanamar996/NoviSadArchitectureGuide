@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import com.example.demo.model.PlaceInfo;
 import com.example.demo.model.RouteInfo;
 import com.example.demo.repository.PlaceInfoRepository;
 import com.example.demo.repository.RouteInfoRepository;

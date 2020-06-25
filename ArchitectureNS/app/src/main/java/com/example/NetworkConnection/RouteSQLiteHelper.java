@@ -11,13 +11,14 @@ public class RouteSQLiteHelper  extends SQLiteOpenHelper {
 
     public static final String TABLE_ROUTE = "route_info";
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_TITLE = "title";
-    public static final String COLUMN_DURATION = "duration";
-    public static final String COLUMN_DESCRIPTION = "description";
-    public static final String COLUMN_KILOMETRES = "kilometres";
-    public static final String COLUMN_IMAGE = "image";
+    public static final String COLUMN_ROUTE_TITLE = "title";
+    public static final String COLUMN_ROUTE_DURATION = "duration";
+    public static final String COLUMN_ROUTE_DESCRIPTION = "description";
+    public static final String COLUMN_ROUTE_KILOMETRES = "kilometres";
+    public static final String COLUMN_ROUTE_IMAGE = "image";
 
     public static final String TABLE_PLACE_INFO = "place_info";
+    public static final String COLUMN_PLACE_ID = "place_info_id";
     public static final String COLUMN_PLACE_TITLE = "place_title";
     public static final String COLUMN_PLACE_DESCRIPTION = "place_description";
     public static final String COLUMN_PLACE_IMAGE = "place_image";
@@ -33,24 +34,24 @@ public class RouteSQLiteHelper  extends SQLiteOpenHelper {
 
     private static final String DB_CREATE_TABLE_ROUTE = "create table "
             + TABLE_ROUTE + "("
-            + COLUMN_ID  + " text primary key, "
-            + COLUMN_DURATION  + " integer, "
-            + COLUMN_TITLE + " text, "
-            + COLUMN_DESCRIPTION + " text, "
-            + COLUMN_KILOMETRES + " double, "
-            + COLUMN_IMAGE+ " text "
+            + COLUMN_ID  + " integer primary key, "
+            + COLUMN_ROUTE_DURATION  + " real, "
+            + COLUMN_ROUTE_TITLE + " text, "
+            + COLUMN_ROUTE_DESCRIPTION + " text, "
+            + COLUMN_ROUTE_KILOMETRES + " real, "
+            + COLUMN_ROUTE_IMAGE+ " text "
             + ")";
 
     private static final String DB_CREATE_TABLE_PLACE_INFO = "create table "
             + TABLE_PLACE_INFO + "("
-            + COLUMN_ID  + " text primary key, "
+            + COLUMN_PLACE_ID  + " integer primary key, "
             + COLUMN_PLACE_TITLE + " text, "
-            + COLUMN_PLACE_DESCRIPTION + " real, "
+            + COLUMN_PLACE_DESCRIPTION + " text, "
             + COLUMN_PLACE_IMAGE + " text, "
-            + COLUMN_ROUTE_ID + "integer,"
-            + COLUMN_PLACE_GRADE + " integer,"
-            + COLUMN_PLACE_LATITUDE + "real,"
-            + COLUMN_PLACE_LONGITUDE + "real"
+            + COLUMN_ROUTE_ID + " integer,"
+            + COLUMN_PLACE_GRADE + " real,"
+            + COLUMN_PLACE_LATITUDE + " real,"
+            + COLUMN_PLACE_LONGITUDE + " real"
             + ")";
 
     @Override
@@ -60,7 +61,6 @@ public class RouteSQLiteHelper  extends SQLiteOpenHelper {
 
     }
 
-    // kada zelimo da izmeninmo tabele, moramo pozvati drop table za sve tabele koje imamo
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ROUTE);
