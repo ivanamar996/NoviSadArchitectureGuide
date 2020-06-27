@@ -117,6 +117,7 @@ public final class RouteInfo implements Parcelable {
             };
 
 
-
-
+    public void setPlaces(List<PlaceInfo> places) {
+        this.places = places;
+    }
 }

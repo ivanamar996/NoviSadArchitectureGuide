@@ -10,9 +10,15 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.example.architecturens.PlaceInfo;
+import com.example.architecturens.RouteInfo;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class DBContentProvider extends ContentProvider {
 
-    private RouteSQLiteHelper database;
+    private static RouteSQLiteHelper database;
     private static final String AUTHORITY = "com.example.architecturens";
     private static final String ROUTE_PATH = "route";
     private static final String PLACE_PATH = "place";
@@ -150,5 +156,42 @@ public class DBContentProvider extends ContentProvider {
         }
         getContext().getContentResolver().notifyChange(uri, null);
         return rowsUpdated;
+    }
+
+    public static List<RouteInfo> getRoutesFromSqlite(){
+
+        List<RouteInfo> routeList=new ArrayList<RouteInfo>();
+        SQLiteDatabase db = database.getWritableDatabase();
+
+        Cursor cursor = db.query(RouteSQLiteHelper.TABLE_ROUTE,new String[]{RouteSQLiteHelper.COLUMN_ID,RouteSQLiteHelper.COLUMN_ROUTE_TITLE,RouteSQLiteHelper.COLUMN_ROUTE_DESCRIPTION,
+                        RouteSQLiteHelper.COLUMN_ROUTE_DURATION,RouteSQLiteHelper.COLUMN_ROUTE_KILOMETRES,RouteSQLiteHelper.COLUMN_ROUTE_IMAGE},
+                null,null,null,null,null,null);
+
+        if(cursor!=null &cursor.getCount()>0){
+            while(cursor.moveToNext()){
+                RouteInfo route = new RouteInfo(cursor.getInt(0),cursor.getString(1),new ArrayList<PlaceInfo>(),cursor.getDouble(3),
+                        cursor.getString(2),cursor.getDouble(4),
+                        cursor.getBlob(5));
+                routeList.add(route);
+
+                Cursor placeCursor = db.query(RouteSQLiteHelper.TABLE_PLACE_INFO,new String[]{RouteSQLiteHelper.COLUMN_PLACE_ID,RouteSQLiteHelper.COLUMN_PLACE_TITLE,
+                RouteSQLiteHelper.COLUMN_PLACE_DESCRIPTION,RouteSQLiteHelper.COLUMN_PLACE_LONGITUDE,RouteSQLiteHelper.COLUMN_PLACE_LATITUDE,RouteSQLiteHelper.COLUMN_PLACE_GRADE,
+                RouteSQLiteHelper.COLUMN_PLACE_IMAGE,RouteSQLiteHelper.COLUMN_ROUTE_ID},"route_id="+route.getId(),null,null,null,null,null);
+
+                if(placeCursor!=null &placeCursor.getCount()>0){
+                    while(placeCursor.moveToNext()){
+
+                        PlaceInfo place = new PlaceInfo(placeCursor.getInt(0),placeCursor.getString(1),placeCursor.getString(2),placeCursor.getBlob(6),
+                                placeCursor.getDouble(5),placeCursor.getDouble(4),placeCursor.getDouble(3),route);
+
+                        route.getPlaces().add(place);
+
+                    }
+                }
+                placeCursor.close();
+            }
+        }
+        cursor.close();
+        return routeList;
     }
 }

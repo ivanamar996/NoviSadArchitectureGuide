@@ -16,7 +16,9 @@ import retrofit2.Response;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,12 +38,16 @@ import com.example.NetworkConnection.DbConnection;
 import com.example.NetworkConnection.RouteSQLiteHelper;
 import com.example.service.GetDataService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -50,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mToggle;
     private Uri routeUri;
     private Uri placeUri;
+    private List<RouteInfo> routes = new ArrayList<RouteInfo>();
 
     @Override
     protected void onResume(){
@@ -98,7 +105,12 @@ public class MainActivity extends AppCompatActivity {
             values.put(RouteSQLiteHelper.COLUMN_ROUTE_KILOMETRES, route.getKilometres());
             values.put(RouteSQLiteHelper.COLUMN_ROUTE_IMAGE, route.getImage());
 
-            routeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_ROUTE, values);
+            if(routes.contains(route)){
+                getContentResolver().update(DBContentProvider.CONTENT_URI_ROUTE, values, "_id="+route.getId(), null);
+            }else {
+                routeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_ROUTE, values);
+            }
+
 
             for(PlaceInfo place : route.getPlaces()){
 
@@ -114,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
                 placeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_PLACE, placeValues);
             }
         }
+
+
     }
 
     @Override
@@ -130,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SetupDrawerContent(navigationView);
 
+        routes = DBContentProvider.getRoutesFromSqlite();
 
         initializeDisplayContent();
     }
@@ -207,8 +222,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initializeDisplayContent() {
-        /*DataManager dataManager = DataManager.getInstance();
-        List<RouteInfo> routes = dataManager.getRoutes();
 
         LinearLayout mainLinearLayout = findViewById(R.id.linear_layout);
 
@@ -225,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
             imageView.setAdjustViewBounds(true);
             imageView.setPadding(3, 3, 3, 3);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            imageView.setImageResource(getReourceID(route.getPictureFileName()));
+            imageView.setImageBitmap(BitmapFactory.decodeByteArray(route.getImage(),0,route.getImage().length));
 
             imageView.setOnClickListener(new View.OnClickListener() {
                                           @Override public void onClick(View v) {
@@ -331,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
         imageViewPlace.setAdjustViewBounds(true);
         imageViewPlace.setPadding(3, 3, 3, 3);
         imageViewPlace.setScaleType(ImageView.ScaleType.FIT_XY);
-        imageViewPlace.setImageResource(getReourceID(place1.getPictureFileName()));
+        imageViewPlace.setImageBitmap(BitmapFactory.decodeByteArray(place1.getImage(),0,place1.getImage().length));
 
         imageViewPlace.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -348,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
         textViewPlaceName.setAlpha((float) 0.8);
         textViewPlaceName.setBackgroundResource(R.color.white);
         textViewPlaceName.setPadding(2, 2, 2, 2);
-        textViewPlaceName.setText(place1.getPlaceTitle());
+        textViewPlaceName.setText(place1.getTitle());
         textViewPlaceName.setTextColor(Color.BLACK);
         textViewPlaceName.setTextSize(16);
 
@@ -368,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
         imageViewPlace1.setAdjustViewBounds(true);
         imageViewPlace1.setPadding(3, 3, 3, 3);
         imageViewPlace1.setScaleType(ImageView.ScaleType.FIT_XY);
-        imageViewPlace1.setImageResource(getReourceID(place2.getPictureFileName()));
+        imageViewPlace1.setImageBitmap(BitmapFactory.decodeByteArray(place2.getImage(),0,place2.getImage().length));
 
         imageViewPlace1.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -385,14 +398,14 @@ public class MainActivity extends AppCompatActivity {
         textViewPlaceName1.setAlpha((float) 0.8);
         textViewPlaceName1.setBackgroundResource(R.color.white);
         textViewPlaceName1.setPadding(2, 2, 2, 2);
-        textViewPlaceName1.setText(place2.getPlaceTitle());
+        textViewPlaceName1.setText(place2.getTitle());
         textViewPlaceName1.setTextColor(Color.BLACK);
         textViewPlaceName1.setTextSize(16);
 
 
         relativeLayout1.addView(textViewPlaceName1);
 
-        recommededPlaces.addView(relativeLayout1);*/
+        recommededPlaces.addView(relativeLayout1);
 
 
     }
