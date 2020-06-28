@@ -194,4 +194,69 @@ public class DBContentProvider extends ContentProvider {
         cursor.close();
         return routeList;
     }
+
+    public static RouteInfo getRouteFromSqlite(Uri uri) {
+
+        RouteInfo route = new RouteInfo();
+
+        String id = String.valueOf(uri).split("/")[2];
+        SQLiteDatabase db = database.getWritableDatabase();
+
+        Cursor cursor = db.query(RouteSQLiteHelper.TABLE_ROUTE,new String[]{RouteSQLiteHelper.COLUMN_ID,RouteSQLiteHelper.COLUMN_ROUTE_TITLE,RouteSQLiteHelper.COLUMN_ROUTE_DESCRIPTION,
+                        RouteSQLiteHelper.COLUMN_ROUTE_DURATION,RouteSQLiteHelper.COLUMN_ROUTE_KILOMETRES,RouteSQLiteHelper.COLUMN_ROUTE_IMAGE},
+                "_id="+Integer.parseInt(id),null,null,null,null,null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+
+            route = new RouteInfo(cursor.getInt(0),cursor.getString(1),new ArrayList<PlaceInfo>(),cursor.getDouble(3),
+                    cursor.getString(2),cursor.getDouble(4),
+                    cursor.getBlob(5));
+
+            Cursor placeCursor = db.query(RouteSQLiteHelper.TABLE_PLACE_INFO,new String[]{RouteSQLiteHelper.COLUMN_PLACE_ID,RouteSQLiteHelper.COLUMN_PLACE_TITLE,
+                    RouteSQLiteHelper.COLUMN_PLACE_DESCRIPTION,RouteSQLiteHelper.COLUMN_PLACE_LONGITUDE,RouteSQLiteHelper.COLUMN_PLACE_LATITUDE,RouteSQLiteHelper.COLUMN_PLACE_GRADE,
+                    RouteSQLiteHelper.COLUMN_PLACE_IMAGE,RouteSQLiteHelper.COLUMN_ROUTE_ID},"route_id="+route.getId(),null,null,null,null,null);
+
+            if(placeCursor!=null &placeCursor.getCount()>0){
+                while(placeCursor.moveToNext()){
+
+                    PlaceInfo place = new PlaceInfo(placeCursor.getInt(0),placeCursor.getString(1),placeCursor.getString(2),placeCursor.getBlob(6),
+                            placeCursor.getDouble(5),placeCursor.getDouble(4),placeCursor.getDouble(3),route);
+
+                    route.getPlaces().add(place);
+
+                }
+            }
+            placeCursor.close();
+
+
+        }
+
+        return route;
+    }
+
+    public static PlaceInfo getPlaceFromSqlite(Uri uri){
+
+        String id = String.valueOf(uri).split("/")[2];
+        SQLiteDatabase db = database.getWritableDatabase();
+        PlaceInfo place = new PlaceInfo();
+        RouteInfo route = new RouteInfo();
+
+        Cursor placeCursor = db.query(RouteSQLiteHelper.TABLE_PLACE_INFO,new String[]{RouteSQLiteHelper.COLUMN_PLACE_ID,RouteSQLiteHelper.COLUMN_PLACE_TITLE,
+                RouteSQLiteHelper.COLUMN_PLACE_DESCRIPTION,RouteSQLiteHelper.COLUMN_PLACE_LONGITUDE,RouteSQLiteHelper.COLUMN_PLACE_LATITUDE,RouteSQLiteHelper.COLUMN_PLACE_GRADE,
+                RouteSQLiteHelper.COLUMN_PLACE_IMAGE,RouteSQLiteHelper.COLUMN_ROUTE_ID},"place_info_id="+Integer.parseInt(id),null,null,null,null,null);
+
+        if(placeCursor!=null &placeCursor.getCount()>0){
+
+            placeCursor.moveToFirst();
+
+            place = new PlaceInfo(placeCursor.getInt(0),placeCursor.getString(1),placeCursor.getString(2),placeCursor.getBlob(6),
+                    placeCursor.getDouble(5),placeCursor.getDouble(4),placeCursor.getDouble(3),route);
+
+        }
+        placeCursor.close();
+
+        return place;
+
+    }
 }

@@ -76,7 +76,36 @@ public class MainActivity extends AppCompatActivity {
                     RouteInfo[] routes = objectMapper.readValue(response.body(), RouteInfo[].class);
                     List<RouteInfo> routeList = Arrays.asList(routes);
 
+                    routeUri = (Uri)DBContentProvider.CONTENT_URI_ROUTE;
+                    placeUri = (Uri)DBContentProvider.CONTENT_URI_PLACE;
+
                     saveToDatabase(routeList);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        Call<String> call2 = service.getRecommendedPlaces();
+        call2.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                try {
+                    PlaceInfo[] places = objectMapper.readValue(response.body(), PlaceInfo[].class);
+                    List<PlaceInfo> recommendedPlaces = Arrays.asList(places);
+
+                    displayRecommendedPlaces(recommendedPlaces);
+
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -96,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         ContentValues values =  new ContentValues();
         ContentValues placeValues =  new ContentValues();
 
-        for(RouteInfo route : routeList){
+        for(final RouteInfo route : routeList){
 
             values.put(RouteSQLiteHelper.COLUMN_ID, route.getId());
             values.put(RouteSQLiteHelper.COLUMN_ROUTE_DURATION, route.getDuration());
@@ -105,10 +134,19 @@ public class MainActivity extends AppCompatActivity {
             values.put(RouteSQLiteHelper.COLUMN_ROUTE_KILOMETRES, route.getKilometres());
             values.put(RouteSQLiteHelper.COLUMN_ROUTE_IMAGE, route.getImage());
 
-            if(routes.contains(route)){
+
+
+            /*if(routes.contains){
                 getContentResolver().update(DBContentProvider.CONTENT_URI_ROUTE, values, "_id="+route.getId(), null);
             }else {
                 routeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_ROUTE, values);
+            }*/
+
+            if (routeUri == null) {
+                routeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_ROUTE, values);}
+            else
+            {
+                getContentResolver().update(routeUri, values, null, null);
             }
 
 
@@ -123,12 +161,17 @@ public class MainActivity extends AppCompatActivity {
                 placeValues.put(RouteSQLiteHelper.COLUMN_PLACE_LATITUDE,place.getLatitude());
                 placeValues.put(RouteSQLiteHelper.COLUMN_PLACE_LONGITUDE,place.getLongitude());
 
-                placeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_PLACE, placeValues);
+                if (placeUri == null) {
+                    placeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_PLACE, placeValues);
+                }else{
+                    getContentResolver().update(placeUri, placeValues, "place_info_id="+place.getId(), null);
+                }
             }
         }
-
-
     }
+
+
+
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -147,6 +190,57 @@ public class MainActivity extends AppCompatActivity {
         routes = DBContentProvider.getRoutesFromSqlite();
 
         initializeDisplayContent();
+    }
+
+    private void displayRecommendedPlaces(List<PlaceInfo> places){
+        //recommended places
+
+        LinearLayout recommededPlaces = findViewById(R.id.linear_layout_recommended);
+
+        for(final PlaceInfo place: places){
+
+            RelativeLayout relativeLayout = new RelativeLayout(this);
+
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            relativeLayout.setLayoutParams(layoutParams);
+
+            ImageView imageViewPlace = new ImageView(this);
+            layoutParams = new RelativeLayout.LayoutParams(convertToDp(180), convertToDp(180));
+            imageViewPlace.setLayoutParams(layoutParams);
+            imageViewPlace.setAdjustViewBounds(true);
+            imageViewPlace.setPadding(3, 3, 3, 3);
+            imageViewPlace.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageViewPlace.setImageBitmap(BitmapFactory.decodeByteArray(place.getImage(),0,place.getImage().length));
+
+            imageViewPlace.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this,PlaceInfoActivity.class);
+                    Uri placeUri = Uri.parse(DBContentProvider.CONTENT_ITEM_PLACE +"/"+ place.getId());
+                    intent.putExtra(DBContentProvider.CONTENT_ITEM_PLACE, placeUri);
+                    startActivity(intent);
+                }
+            });
+
+            relativeLayout.addView(imageViewPlace);
+
+            TextView textViewPlaceName = new TextView(this);
+            layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(convertToDp(10), convertToDp(150), 0, 0);
+            textViewPlaceName.setLayoutParams(layoutParams);
+            textViewPlaceName.setAlpha((float) 0.8);
+            textViewPlaceName.setBackgroundResource(R.color.white);
+            textViewPlaceName.setPadding(2, 2, 2, 2);
+            textViewPlaceName.setText(place.getTitle());
+            textViewPlaceName.setTextColor(Color.BLACK);
+            textViewPlaceName.setTextSize(16);
+
+
+            relativeLayout.addView(textViewPlaceName);
+
+            recommededPlaces.addView(relativeLayout);
+
+        }
+
     }
 
     public void selectItemDrawer(MenuItem menuItem){
@@ -243,7 +337,9 @@ public class MainActivity extends AppCompatActivity {
             imageView.setOnClickListener(new View.OnClickListener() {
                                           @Override public void onClick(View v) {
                                               Intent intent = new Intent(MainActivity.this,PlaceActivity.class);
-                                              intent.putExtra(PlaceActivity.PLACE_INFO, route);
+                                              //intent.putExtra(PlaceActivity.ROUTE_INFO, route);
+                                              Uri routeUri = Uri.parse(DBContentProvider.CONTENT_ITEM_TYpe +"/"+ route.getId());
+                                              intent.putExtra(DBContentProvider.CONTENT_ITEM_TYpe, routeUri);
                                               startActivity(intent);
                                           }
                                       });
@@ -325,88 +421,6 @@ public class MainActivity extends AppCompatActivity {
 
             mainLinearLayout.addView(relativeLayout);
         }
-
-        //recommended places
-
-        LinearLayout recommededPlaces = findViewById(R.id.linear_layout_recommended);
-
-        PlaceInfo place1 = routes.get(0).getPlaces().get(0);
-        PlaceInfo place2 = routes.get(0).getPlaces().get(1);
-
-        RelativeLayout relativeLayout = new RelativeLayout(this);
-
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        relativeLayout.setLayoutParams(layoutParams);
-
-        ImageView imageViewPlace = new ImageView(this);
-        layoutParams = new RelativeLayout.LayoutParams(convertToDp(180), convertToDp(180));
-        imageViewPlace.setLayoutParams(layoutParams);
-        imageViewPlace.setAdjustViewBounds(true);
-        imageViewPlace.setPadding(3, 3, 3, 3);
-        imageViewPlace.setScaleType(ImageView.ScaleType.FIT_XY);
-        imageViewPlace.setImageBitmap(BitmapFactory.decodeByteArray(place1.getImage(),0,place1.getImage().length));
-
-        imageViewPlace.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                // intent za place info activity
-            }
-        });
-
-        relativeLayout.addView(imageViewPlace);
-
-        TextView textViewPlaceName = new TextView(this);
-        layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(convertToDp(10), convertToDp(150), 0, 0);
-        textViewPlaceName.setLayoutParams(layoutParams);
-        textViewPlaceName.setAlpha((float) 0.8);
-        textViewPlaceName.setBackgroundResource(R.color.white);
-        textViewPlaceName.setPadding(2, 2, 2, 2);
-        textViewPlaceName.setText(place1.getTitle());
-        textViewPlaceName.setTextColor(Color.BLACK);
-        textViewPlaceName.setTextSize(16);
-
-
-        relativeLayout.addView(textViewPlaceName);
-
-        recommededPlaces.addView(relativeLayout);
-
-        RelativeLayout relativeLayout1 = new RelativeLayout(this);
-
-        RelativeLayout.LayoutParams layoutParams1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        relativeLayout1.setLayoutParams(layoutParams1);
-
-        ImageView imageViewPlace1 = new ImageView(this);
-        layoutParams1 = new RelativeLayout.LayoutParams(convertToDp(180), convertToDp(180));
-        imageViewPlace1.setLayoutParams(layoutParams1);
-        imageViewPlace1.setAdjustViewBounds(true);
-        imageViewPlace1.setPadding(3, 3, 3, 3);
-        imageViewPlace1.setScaleType(ImageView.ScaleType.FIT_XY);
-        imageViewPlace1.setImageBitmap(BitmapFactory.decodeByteArray(place2.getImage(),0,place2.getImage().length));
-
-        imageViewPlace1.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                // intent za place info activity
-            }
-        });
-
-        relativeLayout1.addView(imageViewPlace1);
-
-        TextView textViewPlaceName1 = new TextView(this);
-        layoutParams1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams1.setMargins(convertToDp(10), convertToDp(150), 0, 0);
-        textViewPlaceName1.setLayoutParams(layoutParams1);
-        textViewPlaceName1.setAlpha((float) 0.8);
-        textViewPlaceName1.setBackgroundResource(R.color.white);
-        textViewPlaceName1.setPadding(2, 2, 2, 2);
-        textViewPlaceName1.setText(place2.getTitle());
-        textViewPlaceName1.setTextColor(Color.BLACK);
-        textViewPlaceName1.setTextSize(16);
-
-
-        relativeLayout1.addView(textViewPlaceName1);
-
-        recommededPlaces.addView(relativeLayout1);
-
 
     }
 

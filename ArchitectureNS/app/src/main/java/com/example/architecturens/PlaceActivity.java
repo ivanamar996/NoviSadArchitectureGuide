@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
@@ -13,23 +16,39 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.NetworkConnection.DBContentProvider;
+import com.example.NetworkConnection.RouteSQLiteHelper;
+
+import java.util.ArrayList;
+
 public class PlaceActivity extends AppCompatActivity {
-    public static final String PLACE_INFO = "com.example.architecturens.PLACE_INFO";
+
+    public static final String ROUTE_INFO = "com.example.architecturens.ROUTE_INFO";
     private RouteInfo mRouteInfo;
+    private Uri routeUri;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
         setContentView(R.layout.activity_place);
-        getIntentAndDisplayValues();
 
+        Bundle extras = getIntent().getExtras();
+        routeUri = (bundle == null) ? null : (Uri) bundle.getParcelable(DBContentProvider.CONTENT_ITEM_TYpe);
+        // Or passed from the other activity
+
+        if(extras != null) {
+            routeUri = extras.getParcelable(DBContentProvider.CONTENT_ITEM_TYpe);
+            getIntentAndDisplayValues(routeUri);
+        }
     }
 
-    private void getIntentAndDisplayValues() {
-        Intent intent = getIntent();
-        mRouteInfo = intent.getParcelableExtra(PLACE_INFO);
+    private void getIntentAndDisplayValues(Uri uri) {
+
+        mRouteInfo = DBContentProvider.getRouteFromSqlite(uri);
+
+
         ImageView imageView = findViewById(R.id.routeImageView);
-        //imageView.setImageResource(getResourceID(mRouteInfo.getImage()));
+        imageView.setImageBitmap(BitmapFactory.decodeByteArray(mRouteInfo.getImage(),0,mRouteInfo.getImage().length));
 
         TextView textViewName = findViewById(R.id.textViewName);
         textViewName.setText(mRouteInfo.getTitle());
@@ -48,7 +67,7 @@ public class PlaceActivity extends AppCompatActivity {
 
         LinearLayout linearLayoutHorizontal = findViewById(R.id.linear_layout_horizontal);
 
-        for(final PlaceInfo place : mRouteInfo.getPlaces()){
+        for(final PlaceInfo place : mRouteInfo.getPlaces()) {
 
             RelativeLayout relativeLayout = new RelativeLayout(this);
 
@@ -61,11 +80,15 @@ public class PlaceActivity extends AppCompatActivity {
             imageViewPlace.setAdjustViewBounds(true);
             imageViewPlace.setPadding(3, 3, 3, 3);
             imageViewPlace.setScaleType(ImageView.ScaleType.FIT_XY);
-           // imageViewPlace.setImageResource(getResourceID(place.getPictureFileName()));
+            imageViewPlace.setImageBitmap(BitmapFactory.decodeByteArray(place.getImage(), 0, place.getImage().length));
 
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                   // intent za place info activity
+            imageViewPlace.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(PlaceActivity.this,PlaceInfoActivity.class);
+                    Uri placeUri = Uri.parse(DBContentProvider.CONTENT_ITEM_PLACE +"/"+ place.getId());
+                    intent.putExtra(DBContentProvider.CONTENT_ITEM_PLACE, placeUri);
+                    startActivity(intent);
                 }
             });
 
@@ -87,13 +110,13 @@ public class PlaceActivity extends AppCompatActivity {
 
             linearLayoutHorizontal.addView(relativeLayout);
 
-        }
 
+        }
     }
 
     public void onMapButtonClick(View view){
         Intent intent = new Intent(PlaceActivity.this,MapsActivity.class);
-        intent.putExtra(PlaceActivity.PLACE_INFO, mRouteInfo);
+        intent.putExtra(DBContentProvider.CONTENT_ITEM_TYpe, routeUri);
         startActivity(intent);
     }
 

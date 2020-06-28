@@ -18,7 +18,7 @@ public final class RouteInfo implements Parcelable {
     private RouteInfo(Parcel source) {
         id = source.readInt();
         title = source.readString();
-        places = new ArrayList<>();
+        places = new ArrayList<PlaceInfo>();
         source.readTypedList(places, PlaceInfo.CREATOR);
         duration=source.readDouble();
         description=source.readString();
@@ -115,9 +115,4 @@ public final class RouteInfo implements Parcelable {
                     return new RouteInfo[size];
                 }
             };
-
-
-    public void setPlaces(List<PlaceInfo> places) {
-        this.places = places;
-    }
 }

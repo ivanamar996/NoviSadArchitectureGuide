@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity(name = "PlaceInfo")
 @Table(name = "Places")
-public class PlaceInfo {
+public class PlaceInfo implements Comparable<PlaceInfo>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,13 +56,14 @@ public class PlaceInfo {
     @JsonIgnore
     private RouteInfo routeInfo;
 
-    public PlaceInfo(String title, String description, byte[] image, double grade, double latitude, double longitude) {
+    public PlaceInfo(String title, String description, byte[] image, double grade, double latitude, double longitude, RouteInfo routeInfo) {
         this.title = title;
         this.description = description;
         this.image = image;
         this.grade = grade;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.routeInfo = routeInfo;
     }
 
     public int getId() {
@@ -119,5 +120,10 @@ public class PlaceInfo {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    @Override
+    public int compareTo(PlaceInfo o) {
+        return (int)o.getGrade() - (int)this.getGrade();
     }
 }

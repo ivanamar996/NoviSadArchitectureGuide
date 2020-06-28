@@ -6,27 +6,17 @@ import android.os.Parcelable;
 
 public final class PlaceInfo implements Parcelable {
 
-    private final Integer id;
-    private final String title;
-    private final String description;
-    private final byte[] image;
-    private final Double grade;
-    private final Double latitude;
-    private final Double longitude;
-    private final RouteInfo routeInfo;
+    private  Integer id;
+    private  String title;
+    private  String description;
+    private  byte[] image;
+    private  Double grade;
+    private  Double latitude;
+    private  Double longitude;
+    private  RouteInfo routeInfo;
 
-    public PlaceInfo(){
-        id = -1;
-        title = "";
-        description = "";
-        image = new byte[0];
-        grade = 0.0;
-        latitude = 0.0;
-        longitude = 0.0;
-        routeInfo = null;
 
-    }
-
+    public PlaceInfo(){}
 
     private PlaceInfo(Parcel source) {
         id = source.readInt();
@@ -37,7 +27,7 @@ public final class PlaceInfo implements Parcelable {
         grade = source.readDouble();
         latitude = source.readDouble();
         longitude = source.readDouble();
-        routeInfo = source.readParcelable(getClass().getClassLoader());
+        routeInfo = new RouteInfo();
     }
 
     public PlaceInfo(Integer id, String title, String description, byte[] image, Double grade, Double latitude, Double longitude, RouteInfo routeInfo) {
@@ -70,7 +60,7 @@ public final class PlaceInfo implements Parcelable {
         dest.writeDouble(grade);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
-        dest.writeParcelable(routeInfo, flags);
+        dest.writeParcelable(null, flags);
     }
 
     public static final Creator<PlaceInfo> CREATOR =
@@ -103,7 +93,7 @@ public final class PlaceInfo implements Parcelable {
         return image;
     }
 
-    public Double getGrade() {
+    public double getGrade() {
         return grade;
     }
 
@@ -120,5 +110,7 @@ public final class PlaceInfo implements Parcelable {
     }
 
 
-
+    public void setGrade(Double grade) {
+        this.grade = grade;
+    }
 }

@@ -11,12 +11,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -26,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -33,6 +36,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.NetworkConnection.DBContentProvider;
 import com.google.android.gms.common.util.MapUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -66,27 +70,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private RelativeLayout relativeLayoutCustomView;
     private TextView textViewPlaceName;
     private PlaceInfo place;
+    private Uri routeUri;
 
     private Marker customMarker;
     private LatLng markerLatLng;
     private Polyline line;
-
+    private Button detailsButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Intent intent = getIntent();
-        mRouteInfo = intent.getParcelableExtra(PLACE_INFO);
+        detailsButton = findViewById(R.id.detailsBtn);
 
-        placePositions.add(new LatLng(45.255790, 19.845772));
-        placePositions.add(new LatLng(45.256132, 19.845423));
-        placePositions.add(new LatLng(45.256283, 19.847117));
+        Bundle extras = getIntent().getExtras();
+        routeUri = (bundle == null) ? null : (Uri) bundle.getParcelable(DBContentProvider.CONTENT_ITEM_TYpe);
+        // Or passed from the other activity
+
+        if(extras != null) {
+            routeUri = extras.getParcelable(DBContentProvider.CONTENT_ITEM_TYpe);
+            mRouteInfo = DBContentProvider.getRouteFromSqlite(routeUri);
+        }
 
         relativeLayoutCustomView = findViewById(R.id.relativeLayoutCustomView);
         textViewPlaceName = findViewById(R.id.placeTitle);
@@ -115,19 +124,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         TextView numTxt = (TextView) marker.findViewById(R.id.num_txt);
         int count = 0;
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(placePositions.get(0),16));
+        LatLng latLang = new LatLng(mRouteInfo.getPlaces().get(0).getLatitude(),mRouteInfo.getPlaces().get(0).getLongitude());
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLang,16));
 
         for(final PlaceInfo place : mRouteInfo.getPlaces()){
 
             count++;
             numTxt.setText(String.valueOf(count));
-
+            latLang = new LatLng(place.getLatitude(),place.getLongitude());
             customMarker = mMap.addMarker(new MarkerOptions()
-                    .position(placePositions.get(count-1))
+                    .position(new LatLng(place.getLatitude(),place.getLongitude()))
                     .title(place.getTitle())
                     .snippet("Snippet")
                     .icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(this, marker))));
 
+            placePositions.add(latLang);
         }
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -166,17 +177,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return bitmap;
     }
 
-    private void displayCustomInfoWindow(Marker marker, PlaceInfo place) {
+    private void displayCustomInfoWindow(Marker marker, PlaceInfo placeInfo) {
 
-        if(place!=null) {
+        if(placeInfo!=null) {
             relativeLayoutCustomView.setVisibility(View.VISIBLE);
             textViewPlaceName.setText(marker.getTitle());
 
             ImageView imageView = findViewById(R.id.placeImage);
-            //imageView.setImageResource(getResourceID(place.getPictureFileName()));
+            imageView.setImageBitmap(BitmapFactory.decodeByteArray(place.getImage(),0,place.getImage().length));
 
+            detailsButton.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    Intent intent = new Intent(MapsActivity.this,PlaceInfoActivity.class);
+                    Uri placeUri = Uri.parse(DBContentProvider.CONTENT_ITEM_PLACE +"/"+ place.getId());
+                    intent.putExtra(DBContentProvider.CONTENT_ITEM_PLACE, placeUri);
+                    startActivity(intent);
+                }
+            });
         }
-
     }
 
     private int getResourceID(String fileName){
@@ -195,9 +213,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void onDetailsClick(View view){
-        Intent intent = new Intent(MapsActivity.this,PlaceInfoActivity.class);
-        intent.putExtra(PlaceActivity.PLACE_INFO, place);
-        startActivity(intent);
+
     }
 
 }
