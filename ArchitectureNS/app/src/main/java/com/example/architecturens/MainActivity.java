@@ -13,14 +13,19 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.net.wifi.SupplicantState;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -57,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     private Uri routeUri;
     private Uri placeUri;
     private List<RouteInfo> routes = new ArrayList<RouteInfo>();
+    private static WifiManager wifiManager;
+    private static boolean wifiConnected = true;
 
     @Override
     protected void onResume(){
@@ -65,59 +72,68 @@ public class MainActivity extends AppCompatActivity {
         final GetDataService service = DbConnection.getRetrofitInstance().create(GetDataService.class);
         RouteSQLiteHelper dbHelper = new RouteSQLiteHelper(MainActivity.this);
 
-        Call<String> call = service.getAllRoutes();
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+        if(wifiConnected) {
+            Call<String> call = service.getAllRoutes();
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
 
-                ObjectMapper objectMapper = new ObjectMapper();
+                    ObjectMapper objectMapper = new ObjectMapper();
 
-                try {
-                    RouteInfo[] routes = objectMapper.readValue(response.body(), RouteInfo[].class);
-                    List<RouteInfo> routeList = Arrays.asList(routes);
+                    try {
+                        RouteInfo[] routes1 = objectMapper.readValue(response.body(), RouteInfo[].class);
+                        List<RouteInfo> routeList = Arrays.asList(routes1);
 
-                    routeUri = (Uri)DBContentProvider.CONTENT_URI_ROUTE;
-                    placeUri = (Uri)DBContentProvider.CONTENT_URI_PLACE;
+                        routeUri = (Uri) DBContentProvider.CONTENT_URI_ROUTE;
+                        placeUri = (Uri) DBContentProvider.CONTENT_URI_PLACE;
 
-                    saveToDatabase(routeList);
+                        saveToDatabase(routeList);
 
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        routes = DBContentProvider.getRoutesFromSqlite();
+
+                        initializeDisplayContent();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                 }
 
-            }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_LONG).show();
+                }
+            });
 
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_LONG).show();
-            }
-        });
+            Call<String> call2 = service.getRecommendedPlaces();
+            call2.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
 
-        Call<String> call2 = service.getRecommendedPlaces();
-        call2.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+                    ObjectMapper objectMapper = new ObjectMapper();
 
-                ObjectMapper objectMapper = new ObjectMapper();
+                    try {
+                        PlaceInfo[] places = objectMapper.readValue(response.body(), PlaceInfo[].class);
+                        List<PlaceInfo> recommendedPlaces = Arrays.asList(places);
 
-                try {
-                    PlaceInfo[] places = objectMapper.readValue(response.body(), PlaceInfo[].class);
-                    List<PlaceInfo> recommendedPlaces = Arrays.asList(places);
-
-                    displayRecommendedPlaces(recommendedPlaces);
+                        displayRecommendedPlaces(recommendedPlaces);
 
 
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                 }
 
-            }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_LONG).show();
+                }
+            });
 
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_LONG).show();
-            }
-        });
+        }else{
+            Toast.makeText(MainActivity.this,"Please, connect to wifi to refresh data.",Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void saveToDatabase(List<RouteInfo> routeList){
@@ -134,18 +150,12 @@ public class MainActivity extends AppCompatActivity {
             values.put(RouteSQLiteHelper.COLUMN_ROUTE_KILOMETRES, route.getKilometres());
             values.put(RouteSQLiteHelper.COLUMN_ROUTE_IMAGE, route.getImage());
 
+            Cursor c = getContentResolver().query(Uri.parse(DBContentProvider.CONTENT_ITEM_TYpe + '/' + route.getId()),
+                    new String[]{RouteSQLiteHelper.COLUMN_ID},"_id"+route.getId(),null,null);
 
-
-            /*if(routes.contains){
-                getContentResolver().update(DBContentProvider.CONTENT_URI_ROUTE, values, "_id="+route.getId(), null);
-            }else {
+            if(c == null){
                 routeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_ROUTE, values);
-            }*/
-
-            if (routeUri == null) {
-                routeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_ROUTE, values);}
-            else
-            {
+            }else{
                 getContentResolver().update(routeUri, values, null, null);
             }
 
@@ -161,7 +171,10 @@ public class MainActivity extends AppCompatActivity {
                 placeValues.put(RouteSQLiteHelper.COLUMN_PLACE_LATITUDE,place.getLatitude());
                 placeValues.put(RouteSQLiteHelper.COLUMN_PLACE_LONGITUDE,place.getLongitude());
 
-                if (placeUri == null) {
+                Cursor pc = getContentResolver().query(Uri.parse(DBContentProvider.CONTENT_ITEM_PLACE + '/' + place.getId()),
+                        new String[]{RouteSQLiteHelper.COLUMN_PLACE_ID},"place_info_id="+place.getId(),null,null);
+
+                if(pc == null){
                     placeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_PLACE, placeValues);
                 }else{
                     getContentResolver().update(placeUri, placeValues, "place_info_id="+place.getId(), null);
@@ -171,7 +184,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(wifiStateReceiver,intentFilter);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(wifiStateReceiver);
+    }
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -187,9 +211,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SetupDrawerContent(navigationView);
 
-        routes = DBContentProvider.getRoutesFromSqlite();
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-        initializeDisplayContent();
     }
 
     private void displayRecommendedPlaces(List<PlaceInfo> places){
@@ -442,4 +465,19 @@ public class MainActivity extends AppCompatActivity {
 
        return resID;
    }
+
+   public static  BroadcastReceiver wifiStateReceiver = new BroadcastReceiver() {
+       @Override
+       public void onReceive(Context context, Intent intent) {
+           int wifiSTateExtra = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
+
+           if(wifiManager.getConnectionInfo().getSupplicantState() == SupplicantState.COMPLETED) {
+               PlaceInfoActivity.setWifiConnected(true);
+               wifiConnected = true;
+           }else {
+               PlaceInfoActivity.setWifiConnected(false);
+               wifiConnected = false;
+           }
+       }
+   };
 }

@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -43,6 +45,8 @@ public class PlaceInfoActivity extends AppCompatActivity {
     private PlaceInfo placeInfo;
     private Uri placeUri;
     private RatingBar ratingBar;
+    private static boolean wifiConnected;
+
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -63,6 +67,19 @@ public class PlaceInfoActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(MainActivity.wifiStateReceiver,intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(MainActivity.wifiStateReceiver);
+    }
+
     private void getIntentAndDisplayValues() {
 
         TextView textView = findViewById(R.id.textViewPlaceName);
@@ -77,12 +94,17 @@ public class PlaceInfoActivity extends AppCompatActivity {
 
         ratingBar = (RatingBar) findViewById(R.id.rating);
         ratingBar.setRating((float) placeInfo.getGrade());
+
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                double newGrade=(rating+placeInfo.getGrade())/2;
-                updateGrade(newGrade);
-                postGradeToBackend(newGrade);
+                if(wifiConnected){
+                    double newGrade=(rating+placeInfo.getGrade())/2;
+                    updateGrade(newGrade);
+                    postGradeToBackend(newGrade);
+                }else{
+                    Toast.makeText(PlaceInfoActivity.this,"Please, connect to wifi to rate the place.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -133,6 +155,10 @@ public class PlaceInfoActivity extends AppCompatActivity {
         int resID = res.getIdentifier(name , "drawable", getPackageName());
 
         return resID;
+    }
+
+    public static void setWifiConnected(boolean connected){
+        wifiConnected = connected;
     }
 
 }

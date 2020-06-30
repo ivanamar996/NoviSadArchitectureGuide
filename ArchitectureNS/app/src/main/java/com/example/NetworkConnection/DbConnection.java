@@ -10,7 +10,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class DbConnection {
     private static Retrofit retrofit = null;
-    private static final String BASE_URL = "http://10.0.2.2:8080"; // lokalna ip adresa
+    private static final String BASE_URL = "http://192.168.0.14:8080"; // lokalna ip adresa
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
