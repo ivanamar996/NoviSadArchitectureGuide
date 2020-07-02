@@ -22,18 +22,23 @@ public class DBContentProvider extends ContentProvider {
     private static final String AUTHORITY = "com.example.architecturens";
     private static final String ROUTE_PATH = "route";
     private static final String PLACE_PATH = "place";
+    private static final String RECOMMENDED_PATH = "recommended";
     public static final Uri CONTENT_URI_ROUTE = Uri.parse("content://" + AUTHORITY + "/" + ROUTE_PATH);
     public static final Uri CONTENT_URI_PLACE = Uri.parse("content://" + AUTHORITY + "/" + PLACE_PATH);
+    public static final Uri CONTENT_URI_RECOMMENDED = Uri.parse("content://" + AUTHORITY + "/" + RECOMMENDED_PATH);
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     public static final String CONTENT_ITEM_TYpe = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/routes";
     public static final String CONTENT_ITEM_PLACE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/places";
+    public static final String CONTENT_ITEM_RECOMMENDED = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/recommended";
 
     private static final int ROUTES = 1;
     private static final int PLACES = 2;
+    private static final int RECOMMENDEDS = 3;
 
     static {
         sURIMatcher.addURI(AUTHORITY, ROUTE_PATH, ROUTES);
         sURIMatcher.addURI(AUTHORITY, PLACE_PATH, PLACES);
+        sURIMatcher.addURI(AUTHORITY, RECOMMENDED_PATH, RECOMMENDEDS);
     }
 
     public DBContentProvider() {
@@ -57,6 +62,11 @@ public class DBContentProvider extends ContentProvider {
                             selection,
                             selectionArgs);
                     break;
+            case  RECOMMENDEDS:
+                rowsDeleted = sqlDB.delete(RouteSQLiteHelper.TABLE_RECOMMENDED,
+                        selection,
+                        selectionArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -85,6 +95,10 @@ public class DBContentProvider extends ContentProvider {
             case PLACES:
                 id = sqlDB.insert(RouteSQLiteHelper.TABLE_PLACE_INFO, null, values);
                 retVal = Uri.parse(PLACE_PATH + "/" + id);
+                break;
+            case RECOMMENDEDS:
+                id = sqlDB.insert(RouteSQLiteHelper.TABLE_RECOMMENDED, null, values);
+                retVal = Uri.parse(RECOMMENDED_PATH + "/" + id);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -117,6 +131,10 @@ public class DBContentProvider extends ContentProvider {
                 // Set the table
                 queryBuilder.setTables(RouteSQLiteHelper.TABLE_PLACE_INFO);
                 break;
+            case RECOMMENDEDS:
+                // Set the table
+                queryBuilder.setTables(RouteSQLiteHelper.TABLE_RECOMMENDED);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -146,6 +164,12 @@ public class DBContentProvider extends ContentProvider {
                 break;
             case PLACES:
                 rowsUpdated = sqlDB.update(RouteSQLiteHelper.TABLE_PLACE_INFO,
+                        values,
+                        selection,
+                        selectionArgs);
+                break;
+            case RECOMMENDEDS:
+                rowsUpdated = sqlDB.update(RouteSQLiteHelper.TABLE_RECOMMENDED,
                         values,
                         selection,
                         selectionArgs);
@@ -258,5 +282,58 @@ public class DBContentProvider extends ContentProvider {
 
         return place;
 
+    }
+
+    public static PlaceInfo getRecommendedPlaceFromSqlite(Uri uri){
+
+        String id = String.valueOf(uri).split("/")[2];
+        SQLiteDatabase db = database.getWritableDatabase();
+        PlaceInfo place = new PlaceInfo();
+        RouteInfo route = new RouteInfo();
+
+        Cursor placeCursor = db.query(RouteSQLiteHelper.TABLE_RECOMMENDED,new String[]{RouteSQLiteHelper.COLUMN_RECOMMENDED_ID,RouteSQLiteHelper.COLUMN_RECOMMENDED_TITLE,
+                RouteSQLiteHelper.COLUMN_RECOMMENDED_DESCRIPTION,RouteSQLiteHelper.COLUMN_RECOMMENDED_LONGITUDE,RouteSQLiteHelper.COLUMN_RECOMMENDED_LATITUDE,RouteSQLiteHelper.COLUMN_RECOMMENDED_GRADE,
+                RouteSQLiteHelper.COLUMN_RECOMMENDED_IMAGE,RouteSQLiteHelper.COLUMN_RECOMMENDED_ROUTE_ID},"recommended_id="+Integer.parseInt(id),null,null,null,null,null);
+
+        if(placeCursor!=null &placeCursor.getCount()>0){
+
+            placeCursor.moveToFirst();
+
+            place = new PlaceInfo(placeCursor.getInt(0),placeCursor.getString(1),placeCursor.getString(2),placeCursor.getBlob(6),
+                    placeCursor.getDouble(5),placeCursor.getDouble(4),placeCursor.getDouble(3),route);
+
+        }
+        placeCursor.close();
+
+        return place;
+
+    }
+
+
+
+    public static List<PlaceInfo> getRecommendedFromSqlite(){
+
+        List<PlaceInfo> placeList=new ArrayList<PlaceInfo>();
+        PlaceInfo place=new PlaceInfo();
+
+        SQLiteDatabase db = database.getWritableDatabase();
+
+        Cursor placeCursor = db.query(RouteSQLiteHelper.TABLE_RECOMMENDED,new String[]{RouteSQLiteHelper.COLUMN_RECOMMENDED_ID,RouteSQLiteHelper.COLUMN_RECOMMENDED_TITLE,
+                RouteSQLiteHelper.COLUMN_RECOMMENDED_DESCRIPTION,RouteSQLiteHelper.COLUMN_RECOMMENDED_LONGITUDE,RouteSQLiteHelper.COLUMN_RECOMMENDED_LONGITUDE,RouteSQLiteHelper.COLUMN_RECOMMENDED_GRADE,
+                RouteSQLiteHelper.COLUMN_RECOMMENDED_IMAGE,RouteSQLiteHelper.COLUMN_RECOMMENDED_ROUTE_ID},null,null,null,null,null,null);
+
+        if(placeCursor!=null &placeCursor.getCount()>0){
+            while(placeCursor.moveToNext()) {
+
+                place = new PlaceInfo(placeCursor.getInt(0), placeCursor.getString(1), placeCursor.getString(2), placeCursor.getBlob(6),
+                        placeCursor.getDouble(5), placeCursor.getDouble(4), placeCursor.getDouble(3), null);
+                placeList.add(place);
+
+            }
+
+        }
+        placeCursor.close();
+
+        return placeList;
     }
 }

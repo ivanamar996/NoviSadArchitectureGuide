@@ -34,7 +34,7 @@ public class PlaceInfoController {
         Collections.sort(places);
 
         String json = "";
-        List<PlaceInfo> recommeded = places.subList(0,4);
+        List<PlaceInfo> recommeded = places.subList(0,6);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             //json = objectMapper.writer().withRootName("routes").writeValueAsString(routes);

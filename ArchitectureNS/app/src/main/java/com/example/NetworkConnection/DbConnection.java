@@ -22,7 +22,6 @@ public class DbConnection {
             retrofit = new retrofit2.Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(client)
-
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .addConverterFactory(JacksonConverterFactory.create())
                     .build();

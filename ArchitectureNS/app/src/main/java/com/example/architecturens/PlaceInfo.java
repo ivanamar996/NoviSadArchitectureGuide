@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 
-public final class PlaceInfo implements Parcelable {
+public final class PlaceInfo implements Parcelable, Comparable<PlaceInfo> {
 
     private  Integer id;
     private  String title;
@@ -112,5 +112,10 @@ public final class PlaceInfo implements Parcelable {
 
     public void setGrade(Double grade) {
         this.grade = grade;
+    }
+
+    @Override
+    public int compareTo(PlaceInfo o) {
+            return (int)o.getGrade() - (int)this.getGrade();
     }
 }

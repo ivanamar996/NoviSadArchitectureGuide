@@ -27,6 +27,16 @@ public class RouteSQLiteHelper  extends SQLiteOpenHelper {
     public static final String COLUMN_PLACE_LONGITUDE = "place_longitude";
     public static final String COLUMN_ROUTE_ID = "route_id";
 
+    public static final String TABLE_RECOMMENDED = "recommended";
+    public static final String COLUMN_RECOMMENDED_ID = "recommended_id";
+    public static final String COLUMN_RECOMMENDED_TITLE = "recommended_title";
+    public static final String COLUMN_RECOMMENDED_DESCRIPTION = "recommended_description";
+    public static final String COLUMN_RECOMMENDED_IMAGE = "recommended_image";
+    public static final String COLUMN_RECOMMENDED_GRADE = "recommended_grade";
+    public static final String COLUMN_RECOMMENDED_LATITUDE = "recommended_latitude";
+    public static final String COLUMN_RECOMMENDED_LONGITUDE = "recommended_longitude";
+    public static final String COLUMN_RECOMMENDED_ROUTE_ID = "recommended_route_id";
+
 
     public RouteSQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -54,10 +64,23 @@ public class RouteSQLiteHelper  extends SQLiteOpenHelper {
             + COLUMN_PLACE_LONGITUDE + " real"
             + ")";
 
+    private static final String DB_CREATE_TABLE_RECOMMENDED = "create table "
+            + TABLE_RECOMMENDED + "("
+            + COLUMN_RECOMMENDED_ID  + " integer primary key, "
+            + COLUMN_RECOMMENDED_TITLE + " text, "
+            + COLUMN_RECOMMENDED_DESCRIPTION + " text, "
+            + COLUMN_RECOMMENDED_IMAGE + " text, "
+            + COLUMN_RECOMMENDED_ROUTE_ID + " integer,"
+            + COLUMN_RECOMMENDED_GRADE + " real,"
+            + COLUMN_RECOMMENDED_LATITUDE + " real,"
+            + COLUMN_RECOMMENDED_LONGITUDE + " real"
+            + ")";
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DB_CREATE_TABLE_ROUTE);
         db.execSQL(DB_CREATE_TABLE_PLACE_INFO);
+        db.execSQL(DB_CREATE_TABLE_RECOMMENDED);
 
     }
 
@@ -65,6 +88,7 @@ public class RouteSQLiteHelper  extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ROUTE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PLACE_INFO);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECOMMENDED);
         onCreate(db);
 
     }

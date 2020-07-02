@@ -44,6 +44,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mToggle;
     private Uri routeUri;
     private Uri placeUri;
+    private Uri recommendedUri;
     private List<RouteInfo> routes = new ArrayList<RouteInfo>();
     public static WifiManager wifiManager;
     private static boolean wifiConnected = true;
@@ -109,9 +111,14 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         PlaceInfo[] places = objectMapper.readValue(response.body(), PlaceInfo[].class);
                         List<PlaceInfo> recommendedPlaces = Arrays.asList(places);
+                        List<PlaceInfo> recom= new ArrayList<PlaceInfo>();
+                        recommendedUri = (Uri) DBContentProvider.CONTENT_URI_RECOMMENDED;
 
-                        displayRecommendedPlaces(recommendedPlaces);
+                        saveRecommendedToDatabase(recommendedPlaces);
+                        recom = DBContentProvider.getRecommendedFromSqlite();
 
+                        if(!display)
+                            displayRecommendedPlaces(recom);
 
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -156,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                 routeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_ROUTE, values);
             }else{
                 values.remove(RouteSQLiteHelper.COLUMN_ID);
-                getContentResolver().update(routeUri, values, null, null);
+                getContentResolver().update(routeUri, values, "_id="+route.getId(), null);
             }
 
 
@@ -183,6 +190,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void saveRecommendedToDatabase(List<PlaceInfo> recomendedPlaces){
+        ContentValues placeValues =  new ContentValues();
+
+        for(PlaceInfo place : recomendedPlaces){
+
+            placeValues.put(RouteSQLiteHelper.COLUMN_RECOMMENDED_ID,place.getId());
+            placeValues.put(RouteSQLiteHelper.COLUMN_RECOMMENDED_TITLE,place.getTitle());
+            placeValues.put(RouteSQLiteHelper.COLUMN_RECOMMENDED_DESCRIPTION,place.getDescription());
+            placeValues.put(RouteSQLiteHelper.COLUMN_RECOMMENDED_IMAGE,place.getImage());
+            placeValues.put(RouteSQLiteHelper.COLUMN_RECOMMENDED_ROUTE_ID,0);
+            placeValues.put(RouteSQLiteHelper.COLUMN_RECOMMENDED_GRADE,place.getGrade());
+            placeValues.put(RouteSQLiteHelper.COLUMN_RECOMMENDED_LATITUDE,place.getLatitude());
+            placeValues.put(RouteSQLiteHelper.COLUMN_RECOMMENDED_LONGITUDE,place.getLongitude());
+
+            PlaceInfo placePom = DBContentProvider.getRecommendedPlaceFromSqlite(Uri.parse(DBContentProvider.CONTENT_ITEM_RECOMMENDED + '/' + place.getId()));
+
+            if(placePom.getId() == null){
+                recommendedUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_RECOMMENDED, placeValues);
+            }else{
+                placeValues.remove(RouteSQLiteHelper.COLUMN_RECOMMENDED_ID);
+                getContentResolver().update(recommendedUri, placeValues, "recommended_id="+place.getId(), null);
+            }
+        }
+    }
 
     @Override
     protected void onStart() {
@@ -221,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayRecommendedPlaces(List<PlaceInfo> places){
         //recommended places
-
+        Collections.sort(places);
         LinearLayout recommededPlaces = findViewById(R.id.linear_layout_recommended);
 
         for(final PlaceInfo place: places){
