@@ -10,6 +10,6 @@
         android:textSize="60sp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/set_location" />
+        android:text="@string/enable_location" />
 
 </RelativeLayout>

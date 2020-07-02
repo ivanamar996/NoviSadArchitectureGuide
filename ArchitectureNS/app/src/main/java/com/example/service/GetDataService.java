@@ -26,5 +26,11 @@ public interface GetDataService {
     @GET("/postGrade/{id}/{grade}")
     Call<String> postGrade(@Path("id")int id, @Path("grade")double grade);
 
+    @GET("/rateApp/{grade}")
+    Call<String> rateApp(@Path("grade")double grade);
+
+    @GET("/comment/{com}")
+    Call<String> commentApp(@Path("com")String com);
+
 
 }

@@ -8,7 +8,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import okhttp3.Route;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -19,15 +18,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,16 +39,12 @@ import com.example.NetworkConnection.DbConnection;
 import com.example.NetworkConnection.RouteSQLiteHelper;
 import com.example.service.GetDataService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -62,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
     private Uri routeUri;
     private Uri placeUri;
     private List<RouteInfo> routes = new ArrayList<RouteInfo>();
-    private static WifiManager wifiManager;
+    public static WifiManager wifiManager;
     private static boolean wifiConnected = true;
+    private boolean display = false;
 
     @Override
     protected void onResume(){
@@ -88,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
                         placeUri = (Uri) DBContentProvider.CONTENT_URI_PLACE;
 
                         saveToDatabase(routeList);
-
                         routes = DBContentProvider.getRoutesFromSqlite();
 
-                        initializeDisplayContent();
+                        if(!display)
+                            initializeDisplayContent();
 
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -104,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_LONG).show();
                 }
             });
+
 
             Call<String> call2 = service.getRecommendedPlaces();
             call2.enqueue(new Callback<String>() {
@@ -136,6 +130,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        display = true;
+    }
+
     private void saveToDatabase(List<RouteInfo> routeList){
 
         ContentValues values =  new ContentValues();
@@ -150,12 +150,12 @@ public class MainActivity extends AppCompatActivity {
             values.put(RouteSQLiteHelper.COLUMN_ROUTE_KILOMETRES, route.getKilometres());
             values.put(RouteSQLiteHelper.COLUMN_ROUTE_IMAGE, route.getImage());
 
-            Cursor c = getContentResolver().query(Uri.parse(DBContentProvider.CONTENT_ITEM_TYpe + '/' + route.getId()),
-                    new String[]{RouteSQLiteHelper.COLUMN_ID},"_id"+route.getId(),null,null);
+            RouteInfo routePom = DBContentProvider.getRouteFromSqlite(Uri.parse(DBContentProvider.CONTENT_ITEM_TYpe + '/' + route.getId()));
 
-            if(c == null){
+            if(routePom.getId()== null){
                 routeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_ROUTE, values);
             }else{
+                values.remove(RouteSQLiteHelper.COLUMN_ID);
                 getContentResolver().update(routeUri, values, null, null);
             }
 
@@ -171,12 +171,12 @@ public class MainActivity extends AppCompatActivity {
                 placeValues.put(RouteSQLiteHelper.COLUMN_PLACE_LATITUDE,place.getLatitude());
                 placeValues.put(RouteSQLiteHelper.COLUMN_PLACE_LONGITUDE,place.getLongitude());
 
-                Cursor pc = getContentResolver().query(Uri.parse(DBContentProvider.CONTENT_ITEM_PLACE + '/' + place.getId()),
-                        new String[]{RouteSQLiteHelper.COLUMN_PLACE_ID},"place_info_id="+place.getId(),null,null);
+                PlaceInfo placePom = DBContentProvider.getPlaceFromSqlite(Uri.parse(DBContentProvider.CONTENT_ITEM_PLACE + '/' + place.getId()));
 
-                if(pc == null){
+                if(placePom.getId() == null){
                     placeUri = getContentResolver().insert(DBContentProvider.CONTENT_URI_PLACE, placeValues);
                 }else{
+                    placeValues.remove(RouteSQLiteHelper.COLUMN_PLACE_ID);
                     getContentResolver().update(placeUri, placeValues, "place_info_id="+place.getId(), null);
                 }
             }
@@ -212,6 +212,10 @@ public class MainActivity extends AppCompatActivity {
         SetupDrawerContent(navigationView);
 
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+
+
+
 
     }
 
@@ -269,11 +273,11 @@ public class MainActivity extends AppCompatActivity {
     public void selectItemDrawer(MenuItem menuItem){
         Fragment myFragment = null;
         Class fragmentClass;
-        LinearLayout scroll = (LinearLayout) findViewById(R.id.scrolllinear);
+        LinearLayout scroll = findViewById(R.id.scrolllinear);
         scroll.setVisibility(LinearLayout.GONE);
         switch (menuItem.getItemId()) {
-            case R.id.language:
-                fragmentClass = Language.class;
+            case R.id.share:
+                fragmentClass = ShareFeedback.class;
                 break;
             case R.id.location:
                 fragmentClass = Location.class;
@@ -285,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = AboutApp.class;
                 break;
             default:
-                fragmentClass = Language.class;
+                fragmentClass = ShareFeedback.class;
         }
 
         try{

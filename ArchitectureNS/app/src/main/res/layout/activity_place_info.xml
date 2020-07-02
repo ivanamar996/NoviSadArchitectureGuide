@@ -52,6 +52,11 @@
                     android:layout_height="match_parent"
                     android:layout_toEndOf="@id/playButton"/>
 
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
             </RelativeLayout>
 
             <TextView
@@ -59,6 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
+                android:gravity="center"
                 android:textColor="@color/colorPrimary"
                 android:textSize="14dp"
                 android:textStyle="normal"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/language" android:title=" Set language" android:icon="@drawable/ic_set"/>
-    <item android:id="@+id/location" android:title="Set location"/>
+    <item android:id="@+id/share" android:title="Share feedback" android:icon="@drawable/ic_set"/>
+    <item android:id="@+id/location" android:title="Enable location"/>
     <item android:id="@+id/rate" android:title="Rate the app"/>
     <item android:id="@+id/about" android:title="About app"/>
 </menu>

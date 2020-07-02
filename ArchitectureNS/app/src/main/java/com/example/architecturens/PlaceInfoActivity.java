@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -39,19 +41,86 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PlaceInfoActivity extends AppCompatActivity {
+public class PlaceInfoActivity extends AppCompatActivity  implements Runnable{
 
     public static final String PLACE_INFO = "com.example.architecturens.PLACE_INFO";
     private PlaceInfo placeInfo;
     private Uri placeUri;
     private RatingBar ratingBar;
-    private static boolean wifiConnected;
+    private SeekBar seekBar;
+    private MediaPlayer mediaPlayer = new MediaPlayer();
+    private boolean wasPlaying = false;
+    private ImageButton playButton;
+    public static boolean wifiConnected;
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                playSong();
+            }
+        });
+
+        final TextView seekBarHint = findViewById(R.id.textView);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+                seekBarHint.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+                seekBarHint.setVisibility(View.VISIBLE);
+                int x = (int) Math.ceil(progress / 1000f);
+
+                if (x < 10)
+                    seekBarHint.setText("0:0" + x);
+                else
+                    seekBarHint.setText("0:" + x);
+
+                double percent = progress / (double) seekBar.getMax();
+                int offset = seekBar.getThumbOffset();
+                int seekWidth = seekBar.getWidth();
+                int val = (int) Math.round(percent * (seekWidth - 2 * offset));
+                int labelWidth = seekBarHint.getWidth();
+                seekBarHint.setX(offset + seekBar.getX() + val
+                        - Math.round(percent * offset)
+                        - Math.round(percent * labelWidth / 2));
+
+                if (progress > 0 && mediaPlayer != null && !mediaPlayer.isPlaying()) {
+                    clearMediaPlayer();
+                    //fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, android.R.drawable.ic_media_play));
+                    PlaceInfoActivity.this.seekBar.setProgress(0);
+                }
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+
+                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                    mediaPlayer.seekTo(seekBar.getProgress());
+                }
+            }
+        });
+
+
+    }
 
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_place_info);
+
+        seekBar= findViewById(R.id.scrubSeekBar);
+        ratingBar = findViewById(R.id.rating);
+        playButton = findViewById(R.id.playButton);
 
         Bundle extras = getIntent().getExtras();
         placeUri = (bundle == null) ? null : (Uri) bundle.getParcelable(DBContentProvider.CONTENT_ITEM_PLACE);
@@ -88,11 +157,11 @@ public class PlaceInfoActivity extends AppCompatActivity {
         ImageView imageView = findViewById(R.id.placeImageView);
         imageView.setImageBitmap(BitmapFactory.decodeByteArray(placeInfo.getImage(),0,placeInfo.getImage().length));
 
-        SeekBar seekBar = findViewById(R.id.scrubSeekBar);
+
         seekBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.SRC_IN);
         seekBar.getThumb().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.SRC_IN);
 
-        ratingBar = (RatingBar) findViewById(R.id.rating);
+
         ratingBar.setRating((float) placeInfo.getGrade());
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -161,4 +230,78 @@ public class PlaceInfoActivity extends AppCompatActivity {
         wifiConnected = connected;
     }
 
+    public void playSong() {
+
+        try {
+
+
+            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                clearMediaPlayer();
+                seekBar.setProgress(0);
+                wasPlaying = true;
+                //playButton.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, android.R.drawable.ic_media_play));
+            }
+
+
+            if (!wasPlaying) {
+
+                if (mediaPlayer == null) {
+                    mediaPlayer = new MediaPlayer();
+                }
+
+                //fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, android.R.drawable.ic_media_pause));
+
+                AssetFileDescriptor descriptor = getAssets().openFd("NoviSadGuide.mp3");
+                mediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
+                descriptor.close();
+
+                mediaPlayer.prepare();
+                mediaPlayer.setVolume(0.5f, 0.5f);
+                mediaPlayer.setLooping(false);
+                seekBar.setMax(mediaPlayer.getDuration());
+
+                mediaPlayer.start();
+                new Thread(this).start();
+
+            }
+
+            wasPlaying = false;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        clearMediaPlayer();
+    }
+
+    private void clearMediaPlayer() {
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        mediaPlayer = null;
+    }
+
+    @Override
+    public void run() {
+
+        int currentPosition = mediaPlayer.getCurrentPosition();
+        int total = mediaPlayer.getDuration();
+
+
+        while (mediaPlayer != null && mediaPlayer.isPlaying() && currentPosition < total) {
+            try {
+                Thread.sleep(1000);
+                currentPosition = mediaPlayer.getCurrentPosition();
+            } catch (InterruptedException e) {
+                return;
+            } catch (Exception e) {
+                return;
+            }
+
+            seekBar.setProgress(currentPosition);
+        }
+    }
 }

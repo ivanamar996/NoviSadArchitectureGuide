@@ -18,7 +18,7 @@ public class PlaceInfo implements Comparable<PlaceInfo>{
     @JsonProperty("title")
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 10000)
     @JsonProperty("description")
     private String description;
 
@@ -56,14 +56,13 @@ public class PlaceInfo implements Comparable<PlaceInfo>{
     @JsonIgnore
     private RouteInfo routeInfo;
 
-    public PlaceInfo(String title, String description, byte[] image, double grade, double latitude, double longitude, RouteInfo routeInfo) {
+    public PlaceInfo(String title, String description, byte[] image, double grade, double latitude, double longitude) {
         this.title = title;
         this.description = description;
         this.image = image;
         this.grade = grade;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.routeInfo = routeInfo;
     }
 
     public int getId() {

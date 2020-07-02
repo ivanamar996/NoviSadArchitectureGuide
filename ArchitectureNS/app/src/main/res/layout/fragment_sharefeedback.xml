@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    tools:context=".ShareFeedback">
+
+    <TextView
+        android:id="@+id/stringde"
+        android:textSize="18dp"
+        android:textColor="@color/green"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="150dp"
+        android:text="@string/rate_app" />
+
+    <EditText
+        android:id="@+id/simpleEditText"
+        android:textSize="25dp"
+        android:layout_marginTop="80dp"
+        android:textColor="@color/green"
+        android:layout_width="300dp"
+        android:layout_below="@+id/stringde"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:hint="Enter your feedback" />
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_marginTop="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:background="@color/green"
+        android:layout_below="@+id/simpleEditText"
+        android:text="Save" />
+
+</RelativeLayout>

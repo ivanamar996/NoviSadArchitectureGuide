@@ -1,16 +1,15 @@
 <resources>
-    <string name="app_name">ArchitectureNS</string>
+    <string name="app_name">Architecture Guide Novi Sad</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="title_activity_maps">Map</string>
 
     <!-- for fragments -->
-    <string name="set_language">Set language</string>
-    <string name="set_location">Set location</string>
-    <string name="rate_app">Rate app</string>
-    <string name="about_app">About app</string>
-
-
-
+    <string name="share_feedback">Share feedback</string>
+    <string name="enable_location">Enable location</string>
+    <string name="rate_app">Please let us know how your experience went with Architecture Guide Novi Sad.</string>
+    <string name="about_app">This application was implemented by students and its main purpose
+        is to introduce users to the architectural sights of Novi Sad. Using this application, users have the opportunity to visit many
+        buildings by choosing the desired route.In addition to the textual content, users are also provided with an audio description of the place.</string>
 
 </resources>

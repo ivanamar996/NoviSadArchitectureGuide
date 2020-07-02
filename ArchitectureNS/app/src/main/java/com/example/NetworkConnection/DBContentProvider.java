@@ -206,7 +206,7 @@ public class DBContentProvider extends ContentProvider {
                         RouteSQLiteHelper.COLUMN_ROUTE_DURATION,RouteSQLiteHelper.COLUMN_ROUTE_KILOMETRES,RouteSQLiteHelper.COLUMN_ROUTE_IMAGE},
                 "_id="+Integer.parseInt(id),null,null,null,null,null);
 
-        if (cursor != null) {
+        if (cursor.getCount() > 0) {
             cursor.moveToFirst();
 
             route = new RouteInfo(cursor.getInt(0),cursor.getString(1),new ArrayList<PlaceInfo>(),cursor.getDouble(3),

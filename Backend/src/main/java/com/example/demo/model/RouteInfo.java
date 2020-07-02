@@ -23,7 +23,7 @@ public class RouteInfo {
     @JsonProperty("title")
     private String title;
 
-    @Column(name = "description", length = 1000)
+    @Column(name = "description", length = 10000)
     @JsonProperty("description")
     private String description;
 
