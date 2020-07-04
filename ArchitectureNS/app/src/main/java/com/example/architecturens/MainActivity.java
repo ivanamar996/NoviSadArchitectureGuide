@@ -20,6 +20,7 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiManager;
@@ -47,6 +48,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static android.graphics.Typeface.BOLD;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private Uri placeUri;
     private Uri recommendedUri;
     private List<RouteInfo> routes = new ArrayList<RouteInfo>();
+    List<PlaceInfo> recom= new ArrayList<PlaceInfo>();
     public static WifiManager wifiManager;
     private static boolean wifiConnected = true;
     private boolean display = false;
@@ -82,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
                         routeUri = (Uri) DBContentProvider.CONTENT_URI_ROUTE;
                         placeUri = (Uri) DBContentProvider.CONTENT_URI_PLACE;
 
+
                         saveToDatabase(routeList);
                         routes = DBContentProvider.getRoutesFromSqlite();
 
@@ -96,7 +101,14 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
-                    Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_LONG).show();
+
+                    routes = DBContentProvider.getRoutesFromSqlite();
+
+                    if(!display)
+                        initializeDisplayContent();
+
+                    Toast.makeText(MainActivity.this,"Please, connect to wifi to refresh data.",Toast.LENGTH_SHORT).show();
+
                 }
             });
 
@@ -111,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         PlaceInfo[] places = objectMapper.readValue(response.body(), PlaceInfo[].class);
                         List<PlaceInfo> recommendedPlaces = Arrays.asList(places);
-                        List<PlaceInfo> recom= new ArrayList<PlaceInfo>();
                         recommendedUri = (Uri) DBContentProvider.CONTENT_URI_RECOMMENDED;
 
                         saveRecommendedToDatabase(recommendedPlaces);
@@ -128,13 +139,24 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
+
+                    recom = DBContentProvider.getRecommendedFromSqlite();
+
+                    if(!display)
+                        displayRecommendedPlaces(recom);
+
                     Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_LONG).show();
+
+                    Toast.makeText(MainActivity.this,"Please, connect to wifi to refresh data.",Toast.LENGTH_SHORT).show();
                 }
             });
 
         }else{
+
             Toast.makeText(MainActivity.this,"Please, connect to wifi to refresh data.",Toast.LENGTH_SHORT).show();
         }
+
+
     }
 
     @Override
@@ -216,13 +238,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        registerReceiver(wifiStateReceiver,intentFilter);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(wifiStateReceiver);
@@ -241,12 +256,11 @@ public class MainActivity extends AppCompatActivity {
         routeUri = (bundle == null) ? null : (Uri) bundle.getParcelable(DBContentProvider.CONTENT_ITEM_TYpe);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SetupDrawerContent(navigationView);
-
+        mToggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.gray2));
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-
-
-
+        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(wifiStateReceiver,intentFilter);
 
     }
 
@@ -290,7 +304,8 @@ public class MainActivity extends AppCompatActivity {
             textViewPlaceName.setPadding(2, 2, 2, 2);
             textViewPlaceName.setText(place.getTitle());
             textViewPlaceName.setTextColor(Color.BLACK);
-            textViewPlaceName.setTextSize(16);
+            textViewPlaceName.setBackgroundColor(getResources().getColor(R.color.gray2));
+            textViewPlaceName.setTextSize(14);
 
 
             relativeLayout.addView(textViewPlaceName);
@@ -386,9 +401,11 @@ public class MainActivity extends AppCompatActivity {
 
             ImageView imageView = new ImageView(this);
             layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, convertToDp(300));
+            layoutParams.setMargins(convertToDp(10),convertToDp(5),convertToDp(10),convertToDp(5));
             imageView.setLayoutParams(layoutParams);
             imageView.setAdjustViewBounds(true);
-            imageView.setPadding(3, 3, 3, 3);
+            imageView.setBackgroundColor(getResources().getColor(R.color.green));
+            imageView.setPadding(convertToDp(2), convertToDp(2), convertToDp(2), convertToDp(2));
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             imageView.setImageBitmap(BitmapFactory.decodeByteArray(route.getImage(),0,route.getImage().length));
 
@@ -406,26 +423,28 @@ public class MainActivity extends AppCompatActivity {
 
             TextView textViewRouteName = new TextView(this);
             layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(0, convertToDp(230), 0, 0);
+            layoutParams.setMargins(convertToDp(15), convertToDp(230), 0, 0);
             textViewRouteName.setLayoutParams(layoutParams);
             textViewRouteName.setAlpha((float) 0.8);
-            textViewRouteName.setBackgroundResource(R.color.white);
+            textViewRouteName.setBackgroundResource(R.color.gray2);
             textViewRouteName.setPadding(2, 2, 2, 2);
             textViewRouteName.setText(route.getTitle());
             textViewRouteName.setTextColor(Color.BLACK);
             textViewRouteName.setTextSize(16);
+            textViewRouteName.setTypeface(null, BOLD);
 
             relativeLayout.addView(textViewRouteName);
 
             ImageView imageViewHumanWalking = new ImageView(this);
             layoutParams = new RelativeLayout.LayoutParams(convertToDp(30), convertToDp(30));
             RelativeLayout.MarginLayoutParams marginLayoutParams = new RelativeLayout.LayoutParams(layoutParams);
-            marginLayoutParams.setMargins(0, convertToDp(260), 0, 0);
+            marginLayoutParams.setMargins(convertToDp(15), convertToDp(260), 0, 0);
             layoutParams = new RelativeLayout.LayoutParams(marginLayoutParams);
             imageViewHumanWalking.setLayoutParams(layoutParams);
             imageViewHumanWalking.setAdjustViewBounds(true);
+            imageViewHumanWalking.setBackgroundColor(getResources().getColor(R.color.gray2));
             imageViewHumanWalking.setAlpha((float) 0.8);
-            imageViewHumanWalking.setBackgroundResource(R.color.white);
+            imageViewHumanWalking.setBackgroundColor(getResources().getColor(R.color.gray2));
             imageViewHumanWalking.setPadding(3, 3, 3, 3);
             imageViewHumanWalking.setScaleType(ImageView.ScaleType.FIT_XY);
             imageViewHumanWalking.setImageResource(R.drawable.human_walking);
@@ -434,11 +453,11 @@ public class MainActivity extends AppCompatActivity {
 
             TextView textViewKm = new TextView(this);
             textViewKm.setId(View.generateViewId());
-            layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(convertToDp(30), convertToDp(260), 0, 0);
+            layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, convertToDp(30));
+            layoutParams.setMargins(convertToDp(44), convertToDp(260), 0, 0);
             textViewKm.setLayoutParams(layoutParams);
             textViewKm.setAlpha((float) 0.8);
-            textViewKm.setBackgroundResource(R.color.white);
+            textViewKm.setBackgroundResource(R.color.gray2);
             textViewKm.setPadding(2, 2, 2, 2);
             textViewKm.setText(route.getKilometres() + " km");
             textViewKm.setTextColor(Color.BLACK);
@@ -454,9 +473,10 @@ public class MainActivity extends AppCompatActivity {
             layoutParams = new RelativeLayout.LayoutParams(marginLayoutParams);
             layoutParams.addRule(RelativeLayout.RIGHT_OF, textViewKm.getId());
             imageViewClock.setLayoutParams(layoutParams);
+            imageViewClock.setBackgroundColor(getResources().getColor(R.color.gray2));
             imageViewClock.setAdjustViewBounds(true);
             imageViewClock.setAlpha((float) 0.8);
-            imageViewClock.setBackgroundResource(R.color.white);
+            imageViewClock.setBackgroundColor(getResources().getColor(R.color.gray2));
             imageViewClock.setPadding(3, 3, 3, 3);
             imageViewClock.setScaleType(ImageView.ScaleType.FIT_XY);
             imageViewClock.setImageResource(R.drawable.clock);
@@ -464,12 +484,12 @@ public class MainActivity extends AppCompatActivity {
             relativeLayout.addView(imageViewClock);
 
             TextView textViewH = new TextView(this);
-            layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, convertToDp(30));
             layoutParams.setMargins(0, convertToDp(260), 0, 0);
             layoutParams.addRule(RelativeLayout.RIGHT_OF, imageViewClock.getId());
             textViewH.setLayoutParams(layoutParams);
             textViewH.setAlpha((float) 0.8);
-            textViewH.setBackgroundResource(R.color.white);
+            textViewH.setBackgroundColor(getResources().getColor(R.color.gray2));
             textViewH.setPadding(2, 2, 2, 2);
             textViewH.setText(route.getDuration() + " h");
             textViewH.setTextColor(Color.BLACK);

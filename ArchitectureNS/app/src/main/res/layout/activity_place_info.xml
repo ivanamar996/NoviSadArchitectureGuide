@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PlaceInfoActivity">
+    tools:context=".PlaceInfoActivity"
+    android:background="@color/gray2">
 
     <ScrollView
         android:id="@+id/scrollview"
@@ -67,7 +68,9 @@
                 android:gravity="center"
                 android:textColor="@color/colorPrimary"
                 android:textSize="14dp"
-                android:textStyle="normal"/>
+                android:padding="10dp"
+                android:textStyle="normal"
+                android:justificationMode="inter_word"/>
 
             <RatingBar
                 android:id="@+id/rating"
@@ -76,7 +79,7 @@
                 android:saveEnabled="true"
                 android:progressTint="@color/gold"
                 android:numStars="5"
-                android:layout_marginLeft="30dp"/>
+                android:layout_gravity="center"/>
 
         </LinearLayout>
     </ScrollView>

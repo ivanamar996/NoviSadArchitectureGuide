@@ -5,7 +5,8 @@
     android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/gray2">
 
     <LinearLayout
         android:id="@+id/scrolllinear"
@@ -29,20 +30,24 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/green"
-                        android:textSize="18dp"
+                        android:textSize="20dp"
+                        android:gravity="center"
                         android:text="Self-guided tours"
                         android:textStyle="bold"
-                        android:layout_margin="5dp"/>
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"/>
                 </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/green"
-                    android:textSize="18dp"
+                    android:textSize="20dp"
                     android:text="Recommended places"
                     android:textStyle="bold"
-                    android:layout_margin="5dp"/>
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:layout_marginBottom="10dp"/>
 
                 <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
@@ -75,7 +80,7 @@
             android:id="@+id/nav_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@color/white"
+            android:background="@color/gray2"
             app:itemTextColor="@color/colorPrimaryDark"
             app:itemIconTint="@color/colorPrimaryDark"
             app:menu="@menu/drawemenu"

@@ -39,13 +39,14 @@
             android:textSize="18dp"
             android:layout_toEndOf="@id/placeImage"
             android:textStyle="bold"
-            android:textColor="@color/white"
+            android:textColor="@color/gray2"
             android:layout_marginTop="10dp"/>
         <Button
             android:id="@+id/detailsBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
+            android:background="@color/gray2"
             android:layout_marginLeft="185dp"
             android:text="Details"/>
     </RelativeLayout>

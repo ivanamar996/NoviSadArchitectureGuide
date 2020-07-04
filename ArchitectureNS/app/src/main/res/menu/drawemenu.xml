@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/share" android:title="Share feedback" android:icon="@drawable/ic_set"/>
-    <item android:id="@+id/location" android:title="Enable location"/>
-    <item android:id="@+id/rate" android:title="Rate the app"/>
-    <item android:id="@+id/about" android:title="About app"/>
+    <item android:id="@+id/share" android:title="Share feedback" android:icon="@drawable/ic_mode_edit_black_24dp"/>
+    <item android:id="@+id/location" android:title="Enable location" android:icon="@drawable/ic_place_black_24dp"/>
+    <item android:id="@+id/rate" android:title="Rate the app" android:icon="@drawable/ic_star_border_black_24dp"/>
+    <item android:id="@+id/about" android:title="About app" android:icon="@drawable/ic_import_contacts_black_24dp"/>
 </menu>

@@ -1,5 +1,6 @@
 package com.example.architecturens;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -40,6 +42,7 @@ public class PlaceActivity extends AppCompatActivity {
             routeUri = extras.getParcelable(DBContentProvider.CONTENT_ITEM_TYpe);
             getIntentAndDisplayValues(routeUri);
         }
+
     }
 
     private void getIntentAndDisplayValues(Uri uri) {
@@ -99,11 +102,11 @@ public class PlaceActivity extends AppCompatActivity {
             layoutParams.setMargins(convertToDp(10), convertToDp(150), 0, 0);
             textViewPlaceName.setLayoutParams(layoutParams);
             textViewPlaceName.setAlpha((float) 0.8);
-            textViewPlaceName.setBackgroundResource(R.color.white);
+            textViewPlaceName.setBackgroundColor(getResources().getColor(R.color.gray2));
             textViewPlaceName.setPadding(2, 2, 2, 2);
             textViewPlaceName.setText(place.getTitle());
             textViewPlaceName.setTextColor(Color.BLACK);
-            textViewPlaceName.setTextSize(16);
+            textViewPlaceName.setTextSize(14);
 
 
             relativeLayout.addView(textViewPlaceName);

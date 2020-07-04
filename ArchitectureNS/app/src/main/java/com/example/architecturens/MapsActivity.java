@@ -1,29 +1,29 @@
 package com.example.architecturens;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +37,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.NetworkConnection.DBContentProvider;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.util.MapUtils;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -56,11 +62,18 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+
+import android.location.Location;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback{
 
     private List<LatLng> placePositions = new ArrayList<LatLng>();
 
@@ -72,17 +85,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private PlaceInfo place;
     private Uri routeUri;
 
+    private Marker locationMarker;
+
     private Marker customMarker;
     private LatLng markerLatLng;
     private Polyline line;
     private Button detailsButton;
+    SupportMapFragment mapFragment;
+
+    FusedLocationProviderClient client;
+
 
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
@@ -92,14 +111,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         routeUri = (bundle == null) ? null : (Uri) bundle.getParcelable(DBContentProvider.CONTENT_ITEM_TYpe);
         // Or passed from the other activity
 
-        if(extras != null) {
+        if (extras != null) {
             routeUri = extras.getParcelable(DBContentProvider.CONTENT_ITEM_TYpe);
             mRouteInfo = DBContentProvider.getRouteFromSqlite(routeUri);
         }
 
+
+
         relativeLayoutCustomView = findViewById(R.id.relativeLayoutCustomView);
         textViewPlaceName = findViewById(R.id.placeTitle);
+
+        client = LocationServices.getFusedLocationProviderClient(this);
+
+
+
+
     }
+
+    private void getCurrentLocation(){
+        Task<Location> task = client.getLastLocation();
+
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(final Location location) {
+                if(location!=null){
+
+                    LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
+
+                    MarkerOptions options = new MarkerOptions().position(latLng)
+                            .title("Current location")
+                            .snippet("Current position");
+
+                    mMap.addMarker(options);
+
+
+                }
+            }
+        });
+    }
+
 
     /**
      * Manipulates the map once available.
@@ -114,9 +164,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        if(ActivityCompat.checkSelfPermission(MapsActivity.this, ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
+            mMap.setMyLocationEnabled(true);
+            getCurrentLocation();
+        }else{
+            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{ACCESS_FINE_LOCATION},44);
+        }
+
         //LatLng noviSad = new LatLng(45.2711884,19.7787146);
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(noviSad,15));
-
 
         markerLatLng = new LatLng(45.2711884,19.7787146);
 
@@ -159,6 +215,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addAll(placePositions)
                 .width(5)
                 .color(ContextCompat.getColor(getApplicationContext(),R.color.green)));
+
     }
 
     // Convert a view to bitmap
@@ -212,8 +269,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return resID;
     }
 
-    public void onDetailsClick(View view){
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode ==44){
+            if(grantResults.length > 0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                getCurrentLocation();
+            }
+        }
     }
-
 }

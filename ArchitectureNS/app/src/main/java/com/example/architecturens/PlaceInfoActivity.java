@@ -70,12 +70,12 @@ public class PlaceInfoActivity extends AppCompatActivity  implements Runnable{
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
 
-                seekBarHint.setVisibility(View.VISIBLE);
+                seekBarHint.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-                seekBarHint.setVisibility(View.VISIBLE);
+                seekBarHint.setVisibility(View.INVISIBLE);
                 int x = (int) Math.ceil(progress / 1000f);
 
                 if (x < 10)
@@ -133,20 +133,28 @@ public class PlaceInfoActivity extends AppCompatActivity  implements Runnable{
             getIntentAndDisplayValues();
         }
 
+        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(MainActivity.wifiStateReceiver,intentFilter);
+
 
     }
+
+
 
     @Override
     protected void onStart() {
         super.onStart();
-        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        registerReceiver(MainActivity.wifiStateReceiver,intentFilter);
+        //IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        //registerReceiver(MainActivity.wifiStateReceiver,intentFilter);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterReceiver(MainActivity.wifiStateReceiver);
+        //unregisterReceiver(MainActivity.wifiStateReceiver);
+
+        if(mediaPlayer!=null)
+            clearMediaPlayer();
     }
 
     private void getIntentAndDisplayValues() {
@@ -191,7 +199,7 @@ public class PlaceInfoActivity extends AppCompatActivity  implements Runnable{
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-
+                Toast.makeText(PlaceInfoActivity.this,"Thanks, we have included your grade in the average.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -275,7 +283,9 @@ public class PlaceInfoActivity extends AppCompatActivity  implements Runnable{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        clearMediaPlayer();
+        unregisterReceiver(MainActivity.wifiStateReceiver);
+        if(mediaPlayer!=null)
+          clearMediaPlayer();
     }
 
     private void clearMediaPlayer() {

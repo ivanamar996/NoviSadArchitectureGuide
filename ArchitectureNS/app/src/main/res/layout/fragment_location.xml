@@ -6,10 +6,25 @@
     tools:context=".Location">
 
     <!-- TODO: Update blank fragment layout -->
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:textColor="@color/white"
+        android:background="@color/green"
+        android:text="GPS" />
+
     <TextView
-        android:textSize="60sp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/enable_location" />
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="22dp"
+        android:layout_marginTop="250dp"
+        android:textColor="@color/green"
+        android:text="location service Stauts Shows Here" />
 
 </RelativeLayout>

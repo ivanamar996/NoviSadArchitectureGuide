@@ -9,7 +9,8 @@
     <string name="enable_location">Enable location</string>
     <string name="rate_app">Please let us know how your experience went with Architecture Guide Novi Sad.</string>
     <string name="about_app">This application was implemented by students and its main purpose
-        is to introduce users to the architectural sights of Novi Sad. Using this application, users have the opportunity to visit many
-        buildings by choosing the desired route.In addition to the textual content, users are also provided with an audio description of the place.</string>
+        is for users to get acquainted with the architectural sights of Novi Sad. With this application, users have the opportunity to visit many
+        buildings of the desired route. In addition to textual content, an audio description of the place is also available to users. The length of the route, the duration as well as the number of sights that make it up are also something that adorns this app. The user is shown recommended places filtered by the ratings of those who visited him. The application is very instructive and interesting for every lover of architecture, as well as those who want to get acquainted with the sights of beautiful Novi Sad.
+    </string>
 
 </resources>
